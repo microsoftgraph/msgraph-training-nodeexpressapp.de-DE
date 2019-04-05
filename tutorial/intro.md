@@ -13,7 +13,7 @@ In diesem Lernprogramm erfahren Sie, wie Sie eine Web-App für Node. js Express 
 Bevor Sie mit dieser Demo beginnen, sollte [node. js](https://nodejs.org) auf dem Entwicklungscomputer installiert sein. Wenn Sie nicht über Node. js verfügen, besuchen Sie den vorherigen Link für Downloadoptionen.
 
 > [!NOTE]
-> Dieses Lernprogramm wurde mit Node Version 10.7.0 geschrieben. Die Schritte in diesem Handbuch funktionieren möglicherweise mit anderen Versionen, jedoch nicht getestet.
+> Dieses Lernprogramm wurde mit Node Version 10.15.3 geschrieben. Die Schritte in diesem Handbuch funktionieren möglicherweise mit anderen Versionen, jedoch nicht getestet.
 
 ## <a name="feedback"></a>Feedback
 

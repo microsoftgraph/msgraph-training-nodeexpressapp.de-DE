@@ -1,40 +1,36 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-In dieser Übung erstellen Sie eine neue Azure AD-Webanwendungs Registrierung mithilfe des Application Registry Portal (ARP).
+In dieser Übung erstellen Sie eine neue Azure AD-Webanwendungs Registrierung mithilfe des Azure Active Directory Admin Center.
 
-1. Öffnen Sie einen Browser, und navigieren Sie zum [Anwendungs Registrierungs Portal](https://apps.dev.microsoft.com). Melden Sie sich über ein **persönliches Konto** (aka: Microsoft-Konto) oder ein Geschäfts- **oder Schulkonto**an.
+1. Öffnen Sie einen Browser, und navigieren Sie zum [Azure Active Directory Admin Center](https://aad.portal.azure.com). Melden Sie sich über ein **persönliches Konto** (aka: Microsoft-Konto) oder ein Geschäfts- **oder Schulkonto**an.
 
-1. Wählen Sie oben auf der Seite **eine APP hinzufügen** aus.
+1. Wählen Sie **Azure Active Directory** in der linken Navigationsleiste aus, und wählen Sie dann **App-Registrierungen (Vorschau)** unter **Manage**aus.
 
-    > [!NOTE]
-    > Wenn auf der Seite mehr als eine Schaltfläche **app hinzufügen** angezeigt wird, wählen Sie diejenige aus, die der Liste **konvergierter apps** entspricht.
+    ![Screenshot der APP-Registrierungen ](./images/aad-portal-app-registrations.png)
 
-1. Legen Sie auf der Seite **Anwendung registrieren** den **Anwendungsnamen** auf **node. js-Graph-Tutorial** fest, und wählen Sie **Erstellen**aus.
+1. Wählen Sie **neue Registrierung**aus. Legen Sie auf der Seite **Anwendung registrieren** die Werte wie folgt fest.
 
-    ![Screenshot des Erstellens einer neuen app in der APP-Registrierungs Portal-Website](./images/arp-create-app-01.png)
+    - Legen **** Sie Name `Node.js Graph Tutorial`auf fest.
+    - Legen Sie **unterstützte Kontotypen** auf **Konten in einem beliebigen Organisations Verzeichnis und persönlichen Microsoft-Konten**fest.
+    - Legen Sie unter umLeitungs- **URI**die erste Dropdown `Web` Liste auf fest, und `http://localhost:3000/auth/callback`legen Sie den Wert auf fest.
 
-1. Kopieren Sie auf der Seite **node. js Graph Tutorial Registration** im Abschnitt **Eigenschaften** die **Anwendungs-ID** , so wie Sie Sie später benötigen.
+    ![Screenshot der Seite "Registrieren einer Anwendung"](./images/aad-register-an-app.png)
 
-    ![Screenshot der neu erstellten Anwendungs-ID](./images/arp-create-app-02.png)
+1. Wählen Sie **registrieren**aus. Kopieren Sie auf der Seite " **node. js Graph Tutorial** " den Wert der **Application (Client)-ID** , und speichern Sie Sie, Sie benötigen Sie im nächsten Schritt.
 
-1. Scrollen Sie nach unten zum Abschnitt **Anwendungs Geheimnisse** .
+    ![Screenshot der Anwendungs-ID der neuen App-Registrierung](./images/aad-application-id.png)
 
-    1. Wählen Sie **Neues Kennwort generieren**aus.
-    1. Kopieren Sie im Dialogfeld **Neues Kennwort generiert** den Inhalt des Felds, so wie Sie es später benötigen.
+1. Wählen Sie unter **Manage**die Option **Authentication** aus. Suchen Sie den **impliziten Grant** -Abschnitt, und aktivieren Sie **ID-Token**. Wählen Sie **Speichern** aus.
 
-        > **Wichtig:** Dieses Kennwort wird nie wieder angezeigt, stellen Sie daher sicher, dass Sie es jetzt kopieren.
+    ![Screenshot des impliziten Grant-Abschnitts](./images/aad-implicit-grant.png)
 
-    ![Screenshot des Kennworts der neu erstellten Anwendung](./images/arp-create-app-03.png)
+1. Wählen Sie unter **Manage**die Option **Certificates & Secrets** aus. Klicken Sie auf die Schaltfläche **neuen geheimen Client Schlüssel** . Geben Sie einen Wert in **Description** ein, und wählen Sie eine der Optionen für **Expires** und wählen Sie **Hinzufügen**aus.
 
-1. Scrollen Sie nach unten zum Abschnitt **Plattformen** .
+    ![Screenshot des Dialogfelds zum Hinzufügen eines geheimen Clients](./images/aad-new-client-secret.png)
 
-    1. Wählen Sie **Plattform hinzufügen**aus.
-    1. Wählen Sie im Dialogfeld **Plattform hinzufügen** die Option **Web**aus.
+1. Kopieren Sie den Client geheimen Wert, bevor Sie diese Seite verlassen. Sie benötigen Sie im nächsten Schritt.
 
-        ![Screenshot Erstellen einer Plattform für die APP](./images/arp-create-app-04.png)
+    > [!IMPORTANT]
+    > Dieser geheime Client Schlüssel wird nie wieder angezeigt, stellen Sie daher sicher, dass Sie ihn jetzt kopieren.
 
-    1. Geben Sie **** im Feld Webplattform die URL `http://localhost:3000/auth/callback` für die Umleitungs- **URLs**ein.
-
-        ![Screenshot der neu hinzugefügten Webplattform für die Anwendung](./images/arp-create-app-05.png)
-
-1. Scrollen Sie zum unteren Rand der Seite, und wählen Sie **Speichern**aus.
+    ![Screenshot des neu hinzugefügten geheimen Clients](./images/aad-copy-client-secret.png)

@@ -39,9 +39,19 @@ Bevor Sie fortfahren, installieren Sie einige zusätzliche Edelsteine, die Sie s
 Führen Sie den folgenden Befehl in der CLI aus.
 
 ```Shell
-npm install dotenv@6.1.0 moment@2.22.2 connect-flash@0.1.1 express-session@1.15.6
-npm install passport-azure-ad@4.0.0 simple-oauth2@2.2.1 @microsoft/microsoft-graph-client@1.3.0
+npm install dotenv@6.2.0 moment@2.24.0 connect-flash@0.1.1 express-session@1.15.6
+npm install passport-azure-ad@4.0.0 simple-oauth2@2.2.1 @microsoft/microsoft-graph-client@1.5.2
 ```
+
+>__WINDOWS-BENUTZER__
+>
+>Wenn beim Versuch, diese Pakete zu installieren, die folgende Fehlermeldung angezeigt wird:
+>
+> `gyp ERR! stack Error: Can't find Python executable "python", you can set the PYTHON env variable.`
+>
+>Führen Sie den folgenden Befehl aus, um die Windows-Build-Tools mithilfe eines erhöhten (Administrator-) Terminalfensters zu installieren, das die VS-Build-Tools und auch Python installiert.
+>
+> `npm install --global --production windows-build-tools`
 
 Aktualisieren Sie nun die Anwendung, um `connect-flash` die `express-session` und die Middleware zu verwenden. Öffnen Sie `./app.js` die Datei, und fügen `require` Sie die folgende Anweisung am Anfang der Datei hinzu.
 
