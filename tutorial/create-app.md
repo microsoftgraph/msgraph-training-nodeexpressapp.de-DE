@@ -43,13 +43,13 @@ npm install dotenv@6.2.0 moment@2.24.0 connect-flash@0.1.1 express-session@1.15.
 npm install passport-azure-ad@4.0.0 simple-oauth2@2.2.1 @microsoft/microsoft-graph-client@1.5.2
 ```
 
->__WINDOWS-BENUTZER__
+>__Windows-Benutzer__
 >
 >Wenn beim Versuch, diese Pakete zu installieren, die folgende Fehlermeldung angezeigt wird:
 >
 > `gyp ERR! stack Error: Can't find Python executable "python", you can set the PYTHON env variable.`
 >
->Führen Sie den folgenden Befehl aus, um die Windows-Build-Tools mithilfe eines erhöhten (Administrator-) Terminalfensters zu installieren, das die VS-Build-Tools und auch Python installiert.
+>Führen Sie den folgenden Befehl aus, um die Windows-Build-Tools mithilfe eines erhöhten (Administrator-) Terminalfensters zu installieren, das die vs-Build-Tools und auch Python installiert.
 >
 > `npm install --global --production windows-build-tools`
 
