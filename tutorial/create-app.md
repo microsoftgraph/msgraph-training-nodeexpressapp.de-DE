@@ -1,18 +1,18 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-In dieser Übung verwenden Sie [Express](http://expressjs.com/) zum Erstellen einer Web-App. Wenn der Express-Generator nicht bereits installiert ist, können Sie ihn über die Befehlszeilenschnittstelle (CLI) mit dem folgenden Befehl installieren.
+In dieser Übung verwenden Sie [Express](http://expressjs.com/) , um eine Webanwendung zu erstellen. Wenn Sie den Express-Generator noch nicht installiert haben, können Sie ihn über die Befehlszeilenschnittstelle (CLI) mit dem folgenden Befehl installieren.
 
 ```Shell
 npm install express-generator -g
 ```
 
-Öffnen Sie Ihre CLI, navigieren Sie zu einem Verzeichnis, in dem Sie Rechte zum Erstellen von Dateien haben, und führen Sie den folgenden Befehl aus, um eine neue Express-App zu erstellen, die [Lenker](http://handlebarsjs.com/) als renderingmaschine verwendet.
+Öffnen Sie die CLI, navigieren Sie zu einem Verzeichnis, in dem Sie über Berechtigungen zum Erstellen von Dateien verfügen, und führen Sie den folgenden Befehl aus, um eine neue Express-App zu erstellen, die als Rendering-Engine [Lenker](http://handlebarsjs.com/) verwendet.
 
 ```Shell
 express --hbs graph-tutorial
 ```
 
-Der Express-Generator erstellt ein neues Verzeichnis `graph-tutorial` mit dem Namen und Gerüst einer Express-App. Navigieren Sie zu diesem neuen Verzeichnis, und geben Sie den folgenden Befehl ein, um Abhängigkeiten zu installieren.
+Der Express-Generator erstellt ein neues Verzeichnis `graph-tutorial` mit dem Namen und ein Gerüst für eine Express-App. Navigieren Sie zu diesem neuen Verzeichnis, und geben Sie den folgenden Befehl ein, um Abhängigkeiten zu installieren.
 
 ```Shell
 npm install
@@ -24,17 +24,17 @@ Sobald dieser Befehl abgeschlossen ist, verwenden Sie den folgenden Befehl, um e
 npm start
 ```
 
-Öffnen Sie Ihren Browser und navigieren Sie zu `http://localhost:3000`. Wenn alles funktioniert, wird die Meldung "Welcome to Express" angezeigt. Wenn diese Meldung nicht angezeigt wird, überprüfen Sie das Handbuch mit den [ersten Schritten von Express](http://expressjs.com/starter/generator.html).
+Öffnen Sie Ihren Browser und navigieren Sie zu `http://localhost:3000`. Wenn alles funktioniert, wird die Nachricht "Willkommen bei Express" angezeigt. Wenn diese Meldung nicht angezeigt wird, überprüfen Sie das [Express-Handbuch Erste Schritte](http://expressjs.com/starter/generator.html).
 
-Bevor Sie fortfahren, installieren Sie einige zusätzliche Edelsteine, die Sie später verwenden werden:
+Bevor Sie fortfahren, sollten Sie einige zusätzliche Edelsteine installieren, die Sie später verwenden werden:
 
-- [dotenv](https://github.com/motdotla/dotenv) zum Laden von Werten aus einer. env-Datei.
-- [](https://github.com/moment/moment/) Zeitpunkt für das Formatieren von Datums-und Uhrzeit Werten.
+- [dotenv](https://github.com/motdotla/dotenv) zum Laden von Werten aus einer env-Datei.
+- [](https://github.com/moment/moment/) Zeitpunkt für die Formatierung von Datum/Uhrzeit-Werten.
 - [Connect-Flash](https://github.com/jaredhanson/connect-flash) zu Flash-Fehlermeldungen in der app.
-- [Express-Session](https://github.com/expressjs/session) zum Speichern von Werten in einer serverseitigen Sitzung im Arbeitsspeicher.
-- [Passport-Azure-AD](https://github.com/AzureAD/passport-azure-ad) zum Authentifizieren und Abrufen von Zugriffstoken.
+- [Express-Sitzung](https://github.com/expressjs/session) zum Speichern von Werten in einer serverseitigen Sitzung im Arbeitsspeicher.
+- [Passport-Azure-AD](https://github.com/AzureAD/passport-azure-ad) zur Authentifizierung und zum Abrufen von Zugriffstoken.
 - [Simple-oauth2](https://github.com/lelylan/simple-oauth2) für die Tokenverwaltung.
-- [Microsoft-Graph-Client](https://github.com/microsoftgraph/msgraph-sdk-javascript) für Aufrufe von Microsoft Graph.
+- [Microsoft-Graph-Client](https://github.com/microsoftgraph/msgraph-sdk-javascript) zum tätigen von Anrufen an Microsoft Graph.
 
 Führen Sie den folgenden Befehl in der CLI aus.
 
@@ -43,24 +43,27 @@ npm install dotenv@6.2.0 moment@2.24.0 connect-flash@0.1.1 express-session@1.15.
 npm install passport-azure-ad@4.0.0 simple-oauth2@2.2.1 @microsoft/microsoft-graph-client@1.5.2
 ```
 
->__Windows-Benutzer__
+> [!TIP]
+> Windows-Benutzer erhalten möglicherweise die folgende Fehlermeldung, wenn Sie versuchen, diese Pakete unter Windows zu installieren.
 >
->Wenn beim Versuch, diese Pakete zu installieren, die folgende Fehlermeldung angezeigt wird:
+> ```Shell
+> gyp ERR! stack Error: Can't find Python executable "python", you can set the PYTHON env variable.
+> ```
 >
-> `gyp ERR! stack Error: Can't find Python executable "python", you can set the PYTHON env variable.`
+> Um den Fehler zu beheben, führen Sie den folgenden Befehl aus, um die Windows-Erstellungstools mithilfe eines erhöhten Terminalfensters (Administrator) zu installieren, das die vs-Erstellungstools und Python installiert.
 >
->Führen Sie den folgenden Befehl aus, um die Windows-Build-Tools mithilfe eines erhöhten (Administrator-) Terminalfensters zu installieren, das die vs-Build-Tools und auch Python installiert.
->
-> `npm install --global --production windows-build-tools`
+> ```Shell
+> npm install --global --production windows-build-tools
+> ```
 
-Aktualisieren Sie nun die Anwendung, um `connect-flash` die `express-session` und die Middleware zu verwenden. Öffnen Sie `./app.js` die Datei, und fügen `require` Sie die folgende Anweisung am Anfang der Datei hinzu.
+Aktualisieren Sie nun die Anwendung für die `connect-flash` Verwendung `express-session` der und Middleware. Öffnen Sie `./app.js` die Datei, und fügen `require` Sie die folgende Anweisung am Anfang der Datei hinzu.
 
 ```js
 var session = require('express-session');
 var flash = require('connect-flash');
 ```
 
-Fügen Sie den folgenden Code unmittelbar nach `var app = express();` der Leitung hinzu.
+Fügen Sie den folgenden Code unmittelbar nach `var app = express();` der Codezeile hinzu.
 
 ```js
 // Session middleware
@@ -182,9 +185,9 @@ Erstellen Sie zunächst das globale Layout für die app. Öffnen Sie `./views/la
 </html>
 ```
 
-Dieser Code fügt [Bootstrap](http://getbootstrap.com/) für einfache Styling und [Font awesome](https://fontawesome.com/) für einige einfache Symbole. Außerdem wird ein globales Layout mit einer NAV-Leiste definiert.
+Dieser Code fügt [Bootstrap](http://getbootstrap.com/) für einfaches Styling und [Font awesome](https://fontawesome.com/) für einige einfache Symbole hinzu. Außerdem wird ein globales Layout mit einer Navigationsleiste definiert.
 
-Öffnen `./public/stylesheets/style.css` Sie jetzt, und ersetzen Sie den gesamten Inhalt durch Folgendes.
+Öffnen `./public/stylesheets/style.css` Sie nun und ersetzen Sie den gesamten Inhalt durch Folgendes.
 
 ```css
 body {
@@ -198,7 +201,7 @@ body {
 }
 ```
 
-Aktualisieren Sie nun die Standardseite. Öffnen Sie `./views/index.hbs` die Datei, und ersetzen Sie Ihren Inhalt durch Folgendes.
+Aktualisieren Sie nun die Standardseite. Öffnen Sie `./views/index.hbs` die Datei, und ersetzen Sie den Inhalt durch Folgendes.
 
 ```html
 <div class="jumbotron">
@@ -233,4 +236,4 @@ module.exports = router;
 
 Speichern Sie alle Änderungen, und starten Sie den Server neu. Nun sollte die APP sehr unterschiedlich aussehen.
 
-![Screenshot der neu gestalteten Homepage](./images/create-app-01.png)
+![Screenshot der neu gestalteten Startseite](./images/create-app-01.png)
