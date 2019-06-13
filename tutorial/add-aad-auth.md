@@ -1,8 +1,8 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-In dieser Übung erweitern Sie die Anwendung aus der vorherigen Übung zur Unterstützung der Authentifizierung mit Azure AD. Dies ist erforderlich, um das erforderliche OAuth-Zugriffstoken für den Aufruf von Microsoft Graph abzurufen. In diesem Schritt integrieren Sie die [Passport-Azure-AD](https://github.com/AzureAD/passport-azure-ad) -Bibliothek in die Anwendung.
+In dieser Übung erweitern Sie die Anwendung aus der vorherigen Übung, um die Authentifizierung mit Azure AD zu unterstützen. Dies ist erforderlich, um das erforderliche OAuth-Zugriffstoken zum Aufrufen von Microsoft Graph zu erhalten. In diesem Schritt werden Sie die [Passport-Azure-AD](https://github.com/AzureAD/passport-azure-ad) -Bibliothek in die Anwendung integrieren.
 
-Erstellen Sie eine neue Datei `.env` mit dem Namen File im Stammverzeichnis Ihrer Anwendung, und fügen Sie den folgenden Code hinzu.
+Erstellen Sie im Stammverzeichnis `.env` der Anwendung eine neue Datei mit dem Namen file, und fügen Sie den folgenden Code hinzu.
 
 ```text
 OAUTH_APP_ID=YOUR_APP_ID_HERE
@@ -15,12 +15,12 @@ OAUTH_AUTHORIZE_ENDPOINT=/oauth2/v2.0/authorize
 OAUTH_TOKEN_ENDPOINT=/oauth2/v2.0/token
 ```
 
-Ersetzen `YOUR APP ID HERE` Sie durch die Anwendungs-ID aus dem Anwendungs Registrierungs Portal, `YOUR APP SECRET HERE` und ersetzen Sie es durch das von Ihnen generierte Kennwort.
+Ersetzen `YOUR APP ID HERE` Sie durch die Anwendungs-ID aus dem Anwendungs Registrierungs Portal, `YOUR APP SECRET HERE` und ersetzen Sie durch das Kennwort, das Sie generiert haben.
 
 > [!IMPORTANT]
-> Wenn Sie die Quellcodeverwaltung wie git verwenden, wäre es jetzt ein guter Zeitpunkt, um die `.env` Datei aus der Quellcodeverwaltung auszuschließen, um versehentlich Ihre APP-ID und Ihr Kennwort zu verlieren.
+> Wenn Sie die Quellcodeverwaltung wie git verwenden, wäre es jetzt ein guter Zeitpunkt, die Datei `.env` aus der Quellcodeverwaltung auszuschließen, damit versehentlich keine APP-ID und Ihr Kennwort verloren gehen.
 
-Öffnen `./app.js` Sie, und fügen Sie die folgende Codezeile am Anfang der Datei hinzu, `.env` um die Datei zu laden.
+Öffnen `./app.js` Sie und fügen Sie die folgende Codezeile am Anfang der Datei hinzu, um `.env` die Datei zu laden.
 
 ```js
 require('dotenv').config();
@@ -28,7 +28,7 @@ require('dotenv').config();
 
 ## <a name="implement-sign-in"></a>Implementieren der Anmeldung
 
-Suchen Sie die `var indexRouter = require('./routes/index');` Position `./app.js`in. Fügen Sie den folgenden Code **vor** dieser Leitung ein.
+Suchen Sie die `var indexRouter = require('./routes/index');` - `./app.js`Position in. Fügen Sie den folgenden Code **vor** dieser Codezeile ein.
 
 ```js
 var passport = require('passport');
@@ -83,9 +83,9 @@ passport.use(new OIDCStrategy(
 ));
 ```
 
-Dieser Code initialisiert die [Passport. js](http://www.passportjs.org/) -Bibliothek, um `passport-azure-ad` die Bibliothek zu verwenden, und konfiguriert Sie mit der APP-ID und dem Kennwort für die app.
+Dieser Code initialisiert die [Passport. js](http://www.passportjs.org/) -Bibliothek für die `passport-azure-ad` Verwendung der Bibliothek und konfiguriert Sie mit der APP-ID und dem Kennwort für die app.
 
-Geben Sie das `passport` Objekt nun an die Express-App weiter. Suchen Sie die `app.use('/', indexRouter);` Position `./app.js`in. Fügen Sie den folgenden Code **vor** dieser Leitung ein.
+Übergeben Sie nun `passport` das Objekt an die Express-App. Suchen Sie die `app.use('/', indexRouter);` - `./app.js`Position in. Fügen Sie den folgenden Code **vor** dieser Codezeile ein.
 
 ```js
 // Initialize passport
@@ -147,31 +147,31 @@ router.get('/signout',
 module.exports = router;
 ```
 
-Dies definiert einen Router mit drei Routen: `signin`, `callback`und `signout`.
+Dadurch wird ein Router mit drei Routen definiert `signin`: `callback`, und `signout`.
 
-Die `signin` Route Ruft die `passport.authenticate` Methode auf, wodurch die APP zur Azure-Anmeldeseite umgeleitet wird.
+Die `signin` Route Ruft die `passport.authenticate` Methode auf, wodurch die APP an die Azure-Anmeldeseite umgeleitet wird.
 
-Bei `callback` der Route wird Azure umgeleitet, nachdem die signierin abgeschlossen wurde. Der Code Ruft die `passport.authenticate` -Methode erneut auf, `passport-azure-ad` wodurch die Strategie ein Zugriffstoken anfordert. Sobald das Token abgerufen wurde, wird der nächste Handler aufgerufen, der zurück zur Startseite mit dem Zugriffstoken im temporären Fehlerwert umgeleitet wird. Wir verwenden dies, um zu überprüfen, ob unsere Anmeldung funktioniert, bevor Sie fortfahren. Bevor wir testen, müssen wir die Express-App so konfigurieren, dass der neue Router `./routes/auth.js`aus verwendet werden kann.
+Auf `callback` der Route wird nach Abschluss der Anmeldung Azure umgeleitet. Der Code Ruft die `passport.authenticate` Methode erneut auf, wodurch `passport-azure-ad` die Strategie ein Zugriffstoken anfordert. Sobald das Token abgerufen wurde, wird der nächste Handler aufgerufen, der zurück zur Startseite mit dem Zugriffstoken im temporären Fehlerwert umgeleitet wird. Wir verwenden dies, um zu überprüfen, ob unsere Anmeldung funktionsfähig ist, bevor Sie fortfahren. Bevor wir testen, müssen wir die Express-App so konfigurieren, dass Sie den neuen `./routes/auth.js`Router verwendet.
 
-Die `signout` -Methode meldet den Benutzer ab und zerstört die Sitzung.
+Die `signout` -Methode protokolliert den Benutzer und zerstört die Sitzung.
 
-Fügen Sie den folgenden **** Code vor `var app = express();` der Leitung ein.
+Fügen Sie den folgenden **** Code vor `var app = express();` die-Codezeile ein.
 
 ```js
 var authRouter = require('./routes/auth');
 ```
 
-Fügen Sie dann den folgenden **** Code nach `app.use('/', indexRouter);` der Leitung ein.
+Fügen Sie dann den folgenden **** Code nach `app.use('/', indexRouter);` der Codezeile ein.
 
 ```js
 app.use('/auth', authRouter);
 ```
 
-Starten Sie den Server, und `https://localhost:3000`navigieren Sie zu. Klicken Sie auf die Anmeldeschaltfläche, und Sie sollten zu `https://login.microsoftonline.com`umgeleitet werden. Melden Sie sich mit Ihrem Microsoft-Konto an, und stimmen Sie den erforderlichen Berechtigungen zu. Der Browser leitet zur App um, wobei das Token angezeigt wird.
+Starten Sie den Server, und `https://localhost:3000`navigieren Sie zu. Klicken Sie auf die Anmeldeschaltfläche, und Sie sollten zu `https://login.microsoftonline.com`umgeleitet werden. Melden Sie sich mit Ihrem Microsoft-Konto an, und stimmen Sie den angeforderten Berechtigungen zu. Der Browser wird an die APP umgeleitet, wobei das Token angezeigt wird.
 
-### <a name="get-user-details"></a>Benutzer Details abrufen
+### <a name="get-user-details"></a>Abrufen von Benutzer Details
 
-Erstellen Sie zunächst eine neue Datei für alle Microsoft Graph-Aufrufe. Erstellen Sie im Stamm des Projekts eine neue Datei `graph.js` , und fügen Sie den folgenden Code hinzu.
+Erstellen Sie zunächst eine neue Datei, in der alle Microsoft Graph-Anrufe gespeichert sind. Erstellen Sie eine neue Datei im Stamm des Projekts mit dem `graph.js` Namen, und fügen Sie den folgenden Code hinzu.
 
 ```js
 var graph = require('@microsoft/microsoft-graph-client');
@@ -199,7 +199,7 @@ function getAuthenticatedClient(accessToken) {
 }
 ```
 
-Dadurch wird die `getUserDetails` Funktion exportiert, die das Microsoft Graph-SDK zum Aufrufen `/me` des Endpunkts und zum Zurückgeben des Ergebnisses verwendet.
+Dadurch wird die `getUserDetails` Funktion exportiert, die das Microsoft Graph-SDK verwendet, `/me` um den Endpunkt aufzurufen und das Ergebnis zurückzugeben.
 
 Aktualisieren Sie `signInComplete` die- `/app.s` Methode in, um diese Funktion aufzurufen. Fügen Sie zunächst die folgenden `require` Anweisungen am Anfang der Datei hinzu.
 
@@ -232,11 +232,11 @@ async function signInComplete(iss, sub, profile, accessToken, refreshToken, para
 }
 ```
 
-Der neue Code aktualisiert den `profile` bereitgestellten durch Passport `email` , um eine Eigenschaft mithilfe der von Microsoft Graph zurückgegebenen Daten hinzuzufügen.
+Der neue Code aktualisiert den `profile` von Passport bereitgestellten `email` , um eine Eigenschaft mithilfe der von Microsoft Graph zurückgegebenen Daten hinzuzufügen.
 
-Fügen Sie schließlich Code `./app.js` hinzu, um das Benutzerprofil in die `locals` Eigenschaft der Antwort zu laden. Dadurch wird es für alle Ansichten in der App zur Verfügung gestellt.
+Fügen Sie schließlich Code `./app.js` hinzu, um das Benutzerprofil in die `locals` Eigenschaft der Antwort zu laden. Dadurch wird es für alle Ansichten in der app verfügbar gemacht.
 
-Fügen Sie den **** folgenden nach `app.use(passport.session());` der Leitung hinzu.
+Fügen Sie Folgendes **nach** der `app.use(passport.session());` -Verbindung hinzu.
 
 ```js
 app.use(function(req, res, next) {
@@ -251,9 +251,9 @@ app.use(function(req, res, next) {
 
 ## <a name="storing-the-tokens"></a>Speichern der Token
 
-Da Sie jetzt Tokens abrufen können, ist es an der Zeit, eine Möglichkeit zum Speichern in der APP zu implementieren. Derzeit speichert die APP das RAW-Zugriffstoken in der speicherresidenten Speicher der Benutzer. Da es sich um eine Beispiel-App handelt, werden Sie Sie auch weiterhin dort speichern. Eine echte APP würde eine zuverlässigere Secure Storage-Lösung wie eine Datenbank verwenden.
+Nachdem Sie nun Token erhalten können, ist es an der Zeit, eine Möglichkeit zum Speichern in der APP zu implementieren. Derzeit speichert die APP das unformatierte Zugriffstoken im Speicher des speicherresidenten Benutzers. Da es sich um eine Beispiel-App handelt, werden Sie Sie aus Gründen der Einfachheit weiterhin dort speichern. Eine reale APP würde eine zuverlässigere sichere Speicherlösung wie eine Datenbank verwenden.
 
-Das Speichern des Zugriffstokens ermöglicht jedoch nicht das Überprüfen des Ablaufs oder das Aktualisieren des Tokens. Um dies zu ermöglichen, aktualisieren Sie das Beispiel, um die Token in einem `AccessToken` Objekt aus der `simple-oauth2` Bibliothek einzuschließen.
+Wenn Sie jedoch nur das Zugriffstoken speichern, können Sie das Ablaufdatum überprüfen oder das Token aktualisieren. Um dies zu ermöglichen, aktualisieren Sie das Beispiel so, dass die Token in `AccessToken` einem Objekt aus `simple-oauth2` der Bibliothek umbrochen werden.
 
 Fügen Sie zunächst `./app.js`in den folgenden Code **vor** der `signInComplete` Funktion hinzu.
 
@@ -272,7 +272,7 @@ const oauth2 = require('simple-oauth2').create({
 });
 ```
 
-Aktualisieren Sie dann die `signInComplete` -Funktion, um `AccessToken` eine aus den unformatierten Token zu erstellen, die übergeben werden, und speichern Sie diese im Benutzerspeicher. Ersetzen Sie die vorhandene `signInComplete`-Funktion durch Folgendes.
+Aktualisieren Sie dann die `signInComplete` -Funktion, um `AccessToken` eine aus den unformatierten Token zu erstellen, die übergeben wurden, und speichern Sie diese im Benutzerspeicher. Ersetzen Sie die vorhandene `signInComplete`-Funktion durch Folgendes.
 
 ```js
 async function signInComplete(iss, sub, profile, accessToken, refreshToken, params, done) {
@@ -319,21 +319,21 @@ router.post('/callback',
 );
 ```
 
-Starten Sie den Server neu, und führen Sie den Anmeldevorgang durch. Sie sollten auf der Startseite zurückkehren, aber die Benutzeroberfläche sollte sich ändern, um anzugeben, dass Sie angemeldet sind.
+Starten Sie den Server neu, und fahren Sie mit dem Anmeldevorgang fort. Sie sollten wieder auf der Startseite enden, aber die Benutzeroberfläche sollte sich ändern, um anzugeben, dass Sie angemeldet sind.
 
-![Screenshot der Startseite nach der Anmeldung](./images/add-aad-auth-01.png)
+![Ein Screenshot der Startseite nach der Anmeldung](./images/add-aad-auth-01.png)
 
-Klicken Sie auf den Benutzer Avatar in der oberen rechten Ecke, **** um auf den Link abmelden zuzugreifen. Wenn **** Sie auf Abmelden klicken, wird die Sitzung zurückgesetzt, und Sie kehren zur Startseite.
+Klicken Sie in der oberen rechten Ecke auf den Avatar des Benutzers **** , um auf den Abmeldelink zuzugreifen. Durch **** klicken auf Abmelden wird die Sitzung zurückgesetzt, und Sie kehren zur Startseite zurück.
 
-![Screenshot des Dropdownmenüs mit dem Link "Abmelden"](./images/add-aad-auth-02.png)
+![Screenshot des Dropdownmenüs mit dem Link zum Abmelden](./images/add-aad-auth-02.png)
 
 ## <a name="refreshing-tokens"></a>Aktualisieren von Token
 
-Zu diesem Zeitpunkt verfügt Ihre Anwendung über ein Zugriffstoken, das in der `Authorization` Kopfzeile von API-aufrufen gesendet wird. Dies ist das Token, mit dem die APP auf Microsoft Graph im Namen des Benutzers zugreifen kann.
+Zu diesem Zeitpunkt verfügt Ihre Anwendung über ein Zugriffstoken, das in der `Authorization` Kopfzeile von API-aufrufen gesendet wird. Dies ist das Token, das es der App ermöglicht, im Namen des Benutzers auf Microsoft Graph zuzugreifen.
 
-Dieses Token ist jedoch kurzlebig. Das Token läuft eine Stunde nach der Ausgabe ab. An dieser Stelle wird das Aktualisierungstoken nützlich. Das Aktualisierungstoken ermöglicht der APP, ein neues Zugriffstoken anzufordern, ohne dass der Benutzer sich erneut anmelden muss.
+Dieses Token ist jedoch nur kurzlebig. Das Token läuft eine Stunde nach seiner Ausgabe ab. Hier wird das Aktualisierungstoken nützlich. Das Aktualisierungstoken ermöglicht der APP, ein neues Zugriffstoken anzufordern, ohne dass sich der Benutzer erneut anmelden muss.
 
-Um dies zu verwalten, erstellen Sie eine neue Datei im Stamm des Projekts `tokens.js` , in dem die Tokenverwaltung-Funktionen aufbewahrt werden sollen. Fügen Sie den folgenden Code hinzu.
+Um dies zu verwalten, erstellen Sie eine neue Datei im Stamm des Projekts mit `tokens.js` dem Namen, in dem die Token-Verwaltungsfunktionen gespeichert sind. Fügen Sie den folgenden Code hinzu.
 
 ```js
 module.exports = {
@@ -360,4 +360,4 @@ module.exports = {
 };
 ```
 
-Diese Methode überprüft zunächst, ob das Zugriffstoken abgelaufen ist oder in Kürze abläuft. Wenn dies der Fall ist, wird das Aktualisierungstoken zum Abrufen neuer Token verwendet, dann wird der Cache aktualisiert und das neue Zugriffstoken zurückgegeben. Sie verwenden diese Methode immer dann, wenn das Zugriffstoken nicht mehr gespeichert werden muss.
+Diese Methode überprüft zunächst, ob das Zugriffstoken abgelaufen oder nahezu abläuft. Wenn dies der Fall ist, wird das Aktualisierungstoken verwendet, um neue Token abzurufen, dann wird der Cache aktualisiert und das neue Zugriffstoken zurückgegeben. Sie verwenden diese Methode immer dann, wenn Sie das Zugriffstoken aus dem Speicher holen müssen.

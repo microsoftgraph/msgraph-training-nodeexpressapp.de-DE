@@ -1,10 +1,10 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-In dieser Übung integrieren Sie Microsoft Graph in die Anwendung. Für diese Anwendung verwenden Sie die [Microsoft-Graph-Client-](https://github.com/microsoftgraph/msgraph-sdk-javascript) Bibliothek, um Aufrufe von Microsoft Graph zu tätigen.
+In dieser Übung werden Sie das Microsoft Graph in die Anwendung integrieren. Für diese Anwendung verwenden Sie die [Microsoft-Graph-Client-](https://github.com/microsoftgraph/msgraph-sdk-javascript) Bibliothek, um Anrufe an Microsoft Graph zu tätigen.
 
 ## <a name="get-calendar-events-from-outlook"></a>Abrufen von Kalenderereignissen aus Outlook
 
-Beginnen Sie mit dem Hinzufügen einer neuen `./graph.js` Methode zur Datei, um die Ereignisse aus dem Kalender abzurufen. Fügen Sie die folgende Funktion innerhalb `module.exports` der `./graph.js`in hinzu.
+Beginnen Sie mit dem Hinzufügen einer neuen `./graph.js` Methode zur Datei, um die Ereignisse aus dem Kalender abzurufen. Fügen Sie die folgende Funktion in `module.exports` der `./graph.js`in hinzu.
 
 ```js
 getEvents: async function(accessToken) {
@@ -20,11 +20,11 @@ getEvents: async function(accessToken) {
 }
 ```
 
-Überlegen Sie sich, was dieser Code tut.
+Überprüfen Sie, was dieser Code tut.
 
-- Die URL, die aufgerufen wird, `/me/events`lautet.
-- Die `select` -Methode schränkt die für jedes Ereignis zurückgegebenen Felder auf nur die ein, die die Ansicht tatsächlich verwendet.
-- Die `orderby` -Methode sortiert die Ergebnisse nach dem Datum und der Uhrzeit, zu denen Sie erstellt wurden, wobei das neueste Element zuerst angezeigt wird.
+- Die URL, die aufgerufen wird `/me/events`.
+- Die `select` -Methode schränkt die für die einzelnen Ereignisse zurückgegebenen Felder auf genau diejenigen ein, die die Ansicht tatsächlich verwendet wird.
+- Die `orderby` Methode sortiert die Ergebnisse nach dem Datum und der Uhrzeit, zu der Sie erstellt wurden, wobei das letzte Element zuerst angezeigt wird.
 
 Erstellen Sie eine neue Datei im `./routes` Verzeichnis mit `calendar.js`dem Namen, und fügen Sie den folgenden Code hinzu.
 
@@ -70,23 +70,23 @@ router.get('/',
 module.exports = router;
 ```
 
-Aktualisieren `./app.js` Sie, um diese neue Route zu verwenden. Fügen Sie die folgende **** Codezeile vor `var app = express();` der Leitung hinzu.
+Aktualisieren `./app.js` Sie diese neue Route. Fügen Sie die folgende **vor** der `var app = express();` -Reihe hinzu.
 
 ```js
 var calendarRouter = require('./routes/calendar');
 ```
 
-Fügen Sie dann die folgende **** Codezeile nach `app.use('/auth', authRouter);` der Leitung hinzu.
+Fügen Sie dann die folgende **** Folge nach `app.use('/auth', authRouter);` der-Verbindung hinzu.
 
 ```js
 app.use('/calendar', calendarRouter);
 ```
 
-Jetzt können Sie dies testen. Melden Sie sich an, und klicken Sie in der Navigationsleiste auf den Link **Kalender** . Wenn alles funktioniert, sollte ein JSON-Dump von Ereignissen im Kalender des Benutzers angezeigt werden.
+Nun können Sie dies testen. Melden Sie sich an, und klicken Sie in der Navigationsleiste auf den Link **Kalender** . Wenn alles funktioniert, sollte ein JSON-Abbild der Ereignisse im Kalender des Benutzers angezeigt werden.
 
 ## <a name="display-the-results"></a>Anzeigen der Ergebnisse
 
-Jetzt können Sie eine Ansicht hinzufügen, um die Ergebnisse benutzerfreundlicher anzuzeigen. Fügen Sie zunächst den folgenden Code in `./app.js` **nach** der `app.set('view engine', 'hbs');` -Leitung hinzu.
+Jetzt können Sie eine Ansicht hinzufügen, um die Ergebnisse auf eine benutzerfreundlichere Weise anzuzeigen. Fügen Sie zunächst den folgenden Code `./app.js` **nach** der `app.set('view engine', 'hbs');` -Codezeile ein.
 
 ```js
 var hbs = require('hbs');
@@ -97,7 +97,7 @@ hbs.registerHelper('eventDateTime', function(dateTime){
 });
 ```
 
-Dies implementiert einen [Lenker-Helfer](http://handlebarsjs.com/#helpers) , um das von Microsoft Graph zurückgegebene ISO 8601-Datum in etwas menschlich freundlicheres zu formatieren.
+Dadurch wird ein [Lenker-Helfer](http://handlebarsjs.com/#helpers) implementiert, um das von Microsoft Graph zurückgegebene ISO 8601-Datum in etwas menschlicheres zu formatieren.
 
 Erstellen Sie eine neue Datei im `./views` Verzeichnis mit `calendar.hbs` dem Namen, und fügen Sie den folgenden Code hinzu.
 
@@ -125,7 +125,7 @@ Erstellen Sie eine neue Datei im `./views` Verzeichnis mit `calendar.hbs` dem Na
 </table>
 ```
 
-, Der eine Auflistung von Ereignissen durchläuft und jeweils eine Tabellenzeile hinzufügt. Aktualisieren Sie nun die Route `./routes/calendar.js` in, um diese Ansicht zu verwenden. Ersetzen Sie die vorhandene Route durch den folgenden Code.
+Dadurch wird eine Auflistung von Ereignissen durchlaufen und für jeden eine Tabellenzeile hinzugefügt. Aktualisieren Sie nun die Route `./routes/calendar.js` in, um diese Ansicht zu verwenden. Ersetzen Sie die vorhandene Route durch den folgenden Code.
 
 ```js
 router.get('/',
@@ -170,4 +170,4 @@ router.get('/',
 
 Speichern Sie Ihre Änderungen, starten Sie den Server neu, und melden Sie sich bei der APP an. Klicken Sie auf den Link **Kalender** , und die APP sollte jetzt eine Tabelle mit Ereignissen rendern.
 
-![Screenshot der Ereignistabelle](./images/add-msgraph-01.png)
+![Ein Screenshot der Ereignistabelle](./images/add-msgraph-01.png)
