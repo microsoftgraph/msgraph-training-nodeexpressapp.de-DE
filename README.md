@@ -22,6 +22,10 @@ Wenn Sie das fertige Beispiel nur generieren möchten, indem Sie dieser Übungse
 
 - [Fertig gestelltes Projekt](Demos/03-add-msgraph)
 
+## <a name="watch-the-module"></a>Modul ansehen
+
+Dieses Modul wurde aufgezeichnet und steht im Office-Entwicklungs Kanal YouTube zur Verfügung: [Build Node. js Express apps with Microsoft Graph](https://youtu.be/n6q8Cm-pTYY)
+
 ## <a name="contributors"></a>Mitwirkende
 
 |           Rollen            |                                           Autor (en)                                           |
@@ -33,13 +37,14 @@ Wenn Sie das fertige Beispiel nur generieren möchten, indem Sie dieser Übungse
 
 ## <a name="version-history"></a>Versionsverlauf
 
-| Version |       Datum       |              Kommentare              |
-| ------- | ---------------- | ---------------------------------- |
-| 1.4     | 24. Mai 2019     | 2019Q4-Inhaltsaktualisierung             |
-| 1.3     | 17. Mai 2019     | Aktualisierte Schritte der Aad-App-Registrierung |
-| 1.2     | 10. März 2019   | 2019Q3-Inhaltsaktualisierung             |
-| 1.1     | 8. Februar 2019 | Folien hinzugefügt                       |
-| 1.0     | 2018             | Veröffentlicht                          |
+| Version |       Datum       |                     Kommentare                     |
+| ------- | ---------------- | ------------------------------------------------ |
+| 1.5     | 18. Juni 2019    | Readme in aktualisierte Screencast-Aufzeichnung aktualisiert |
+| 1.4     | 24. Mai 2019     | 2019Q4-Inhaltsaktualisierung                           |
+| 1.3     | 17. Mai 2019     | Aktualisierte Schritte der Aad-App-Registrierung               |
+| 1.2     | 10. März 2019   | 2019Q3-Inhaltsaktualisierung                           |
+| 1.1     | 8. Februar 2019 | Folien hinzugefügt                                     |
+| 1.0     | 2018             | Veröffentlicht                                        |
 
 ## <a name="disclaimer"></a>Verzichtserklärung
 
