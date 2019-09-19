@@ -201,7 +201,7 @@ function getAuthenticatedClient(accessToken) {
 
 Dadurch wird die `getUserDetails` Funktion exportiert, die das Microsoft Graph-SDK verwendet, `/me` um den Endpunkt aufzurufen und das Ergebnis zurückzugeben.
 
-Aktualisieren Sie `signInComplete` die- `/app.s` Methode in, um diese Funktion aufzurufen. Fügen Sie zunächst die folgenden `require` Anweisungen am Anfang der Datei hinzu.
+Aktualisieren Sie `signInComplete` die- `/app.js` Methode in, um diese Funktion aufzurufen. Fügen Sie zunächst die folgenden `require` Anweisungen am Anfang der Datei hinzu.
 
 ```js
 var graph = require('./graph');
@@ -323,7 +323,7 @@ Starten Sie den Server neu, und fahren Sie mit dem Anmeldevorgang fort. Sie soll
 
 ![Ein Screenshot der Startseite nach der Anmeldung](./images/add-aad-auth-01.png)
 
-Klicken Sie in der oberen rechten Ecke auf den Avatar des Benutzers **** , um auf den Abmeldelink zuzugreifen. Durch **** klicken auf Abmelden wird die Sitzung zurückgesetzt, und Sie kehren zur Startseite zurück.
+Klicken Sie in der oberen rechten Ecke auf den Avatar des Benutzers, um auf den **Abmelde** Link zuzugreifen. Durch Klicken auf **Abmelden** wird die Sitzung zurückgesetzt, und Sie kehren zur Startseite zurück.
 
 ![Screenshot des Dropdownmenüs mit dem Link zum Abmelden](./images/add-aad-auth-02.png)
 

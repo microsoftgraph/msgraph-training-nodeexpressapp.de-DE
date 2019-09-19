@@ -29,7 +29,7 @@ npm start
 Bevor Sie fortfahren, sollten Sie einige zusätzliche Edelsteine installieren, die Sie später verwenden werden:
 
 - [dotenv](https://github.com/motdotla/dotenv) zum Laden von Werten aus einer env-Datei.
-- [](https://github.com/moment/moment/) Zeitpunkt für die Formatierung von Datum/Uhrzeit-Werten.
+- [Zeitpunkt für die](https://github.com/moment/moment/) Formatierung von Datum/Uhrzeit-Werten.
 - [Connect-Flash](https://github.com/jaredhanson/connect-flash) zu Flash-Fehlermeldungen in der app.
 - [Express-Sitzung](https://github.com/expressjs/session) zum Speichern von Werten in einer serverseitigen Sitzung im Arbeitsspeicher.
 - [Passport-Azure-AD](https://github.com/AzureAD/passport-azure-ad) zur Authentifizierung und zum Abrufen von Zugriffstoken.
@@ -39,8 +39,8 @@ Bevor Sie fortfahren, sollten Sie einige zusätzliche Edelsteine installieren, d
 Führen Sie den folgenden Befehl in der CLI aus.
 
 ```Shell
-npm install dotenv@8.0.0 moment@2.24.0 connect-flash@0.1.1 express-session@1.16.1
-npm install passport-azure-ad@4.0.0 simple-oauth2@2.2.1 @microsoft/microsoft-graph-client@1.6.0
+npm install dotenv@8.1.0 moment@2.24.0 connect-flash@0.1.1 express-session@1.16.2
+npm install passport-azure-ad@4.1.0 simple-oauth2@2.4.0 @microsoft/microsoft-graph-client@1.7.0
 ```
 
 > [!TIP]
