@@ -108,12 +108,10 @@ router.get('/signin',
         response: res,
         prompt: 'login',
         failureRedirect: '/',
-        failureFlash: true
+        failureFlash: true,
+        successRedirect: '/'
       }
     )(req,res,next);
-  },
-  function(req, res) {
-    res.redirect('/');
   }
 );
 
@@ -175,6 +173,7 @@ Erstellen Sie zunächst eine neue Datei, in der alle Microsoft Graph-Anrufe gesp
 
 ```js
 var graph = require('@microsoft/microsoft-graph-client');
+require('isomorphic-fetch');
 
 module.exports = {
   getUserDetails: async function(accessToken) {
@@ -300,7 +299,7 @@ async function signInComplete(iss, sub, profile, accessToken, refreshToken, para
 }
 ```
 
-Aktualisieren Sie `callback` die Route `./routes/auth.js` in, um `req.flash` die Linie mit dem Zugriffstoken zu entfernen. Die `callback` Route sollte wie folgt aussehen.
+Aktualisieren Sie `callback` die Route `./routes/auth.js` in, um `req.flash` die und manuelle Umleitung zu entfernen, `successRedirect` und geben `passport.authenticate`Sie den Parameter an. Die `callback` Route sollte wie folgt aussehen.
 
 ```js
 router.post('/callback',
@@ -309,12 +308,10 @@ router.post('/callback',
       {
         response: res,
         failureRedirect: '/',
-        failureFlash: true
+        failureFlash: true,
+        successRedirect: '/'
       }
     )(req,res,next);
-  },
-  function(req, res) {
-    res.redirect('/');
   }
 );
 ```
