@@ -1,32 +1,38 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-In dieser Übung verwenden Sie [Express](http://expressjs.com/) , um eine Webanwendung zu erstellen. Wenn Sie den Express-Generator noch nicht installiert haben, können Sie ihn über die Befehlszeilenschnittstelle (CLI) mit dem folgenden Befehl installieren.
+In dieser Übung verwenden Sie [Express](http://expressjs.com/) , um eine Webanwendung zu erstellen.
 
-```Shell
-npm install express-generator -g
-```
+1. Öffnen Sie die CLI, navigieren Sie zu einem Verzeichnis, in dem Sie über Berechtigungen zum Erstellen von Dateien verfügen, und führen Sie den folgenden Befehl aus, um eine neue Express-App zu erstellen, die als Rendering-Engine [Lenker](http://handlebarsjs.com/) verwendet.
 
-Öffnen Sie die CLI, navigieren Sie zu einem Verzeichnis, in dem Sie über Berechtigungen zum Erstellen von Dateien verfügen, und führen Sie den folgenden Befehl aus, um eine neue Express-App zu erstellen, die als Rendering-Engine [Lenker](http://handlebarsjs.com/) verwendet.
+    ```Shell
+    npx express-generator@4.16.1 --hbs graph-tutorial
+    ```
 
-```Shell
-express --hbs graph-tutorial
-```
+    Der Express-Generator erstellt ein neues Verzeichnis `graph-tutorial` mit dem Namen und ein Gerüst für eine Express-App.
 
-Der Express-Generator erstellt ein neues Verzeichnis `graph-tutorial` mit dem Namen und ein Gerüst für eine Express-App. Navigieren Sie zu diesem neuen Verzeichnis, und geben Sie den folgenden Befehl ein, um Abhängigkeiten zu installieren.
+1. Navigieren Sie zum `graph-tutorial` Verzeichnis, und geben Sie den folgenden Befehl ein, um Abhängigkeiten zu installieren.
 
-```Shell
-npm install
-```
+    ```Shell
+    npm install
+    ```
 
-Sobald dieser Befehl abgeschlossen ist, verwenden Sie den folgenden Befehl, um einen lokalen Webserver zu starten.
+1. Führen Sie den folgenden Befehl aus, um Knoten Pakete mit gemeldeten Sicherheitsanfälligkeiten zu aktualisieren.
 
-```Shell
-npm start
-```
+    ```Shell
+    npm audit fix
+    ```
 
-Öffnen Sie Ihren Browser und navigieren Sie zu `http://localhost:3000`. Wenn alles funktioniert, wird die Nachricht "Willkommen bei Express" angezeigt. Wenn diese Meldung nicht angezeigt wird, überprüfen Sie das [Express-Handbuch Erste Schritte](http://expressjs.com/starter/generator.html).
+1. Verwenden Sie den folgenden Befehl, um einen lokalen Webserver zu starten.
 
-Bevor Sie fortfahren, sollten Sie einige zusätzliche Edelsteine installieren, die Sie später verwenden werden:
+    ```Shell
+    npm start
+    ```
+
+1. Öffnen Sie Ihren Browser und navigieren Sie zu `http://localhost:3000`. Wenn alles funktioniert, wird die Nachricht "Willkommen bei Express" angezeigt. Wenn diese Meldung nicht angezeigt wird, überprüfen Sie das [Express-Handbuch Erste Schritte](http://expressjs.com/starter/generator.html).
+
+## <a name="install-node-packages"></a>Installieren von Knoten Paketen
+
+Bevor Sie fortfahren, installieren Sie einige zusätzliche Pakete, die Sie später verwenden werden:
 
 - [dotenv](https://github.com/motdotla/dotenv) zum Laden von Werten aus einer env-Datei.
 - [Zeitpunkt für die](https://github.com/moment/moment/) Formatierung von Datum/Uhrzeit-Werten.
@@ -37,204 +43,59 @@ Bevor Sie fortfahren, sollten Sie einige zusätzliche Edelsteine installieren, d
 - [Microsoft-Graph-Client](https://github.com/microsoftgraph/msgraph-sdk-javascript) zum tätigen von Anrufen an Microsoft Graph.
 - [isomorph-FETCH](https://github.com/matthew-andrews/isomorphic-fetch) to Polyfill der FETCH for-Knoten. Für die `microsoft-graph-client` Bibliothek ist eine Abruf Polyfüllung erforderlich. Weitere Informationen finden Sie im [Microsoft Graph-JavaScript-Clientbibliothek-wiki](https://github.com/microsoftgraph/msgraph-sdk-javascript/wiki/Migration-from-1.x.x-to-2.x.x#polyfill-only-when-required) .
 
-Führen Sie den folgenden Befehl in der CLI aus.
+1. Führen Sie den folgenden Befehl in der CLI aus.
 
-```Shell
-npm install dotenv@8.2.0 moment@2.24.0 connect-flash@0.1.1 express-session@1.17.0 isomorphic-fetch@2.2.1
-npm install passport-azure-ad@4.2.0 simple-oauth2@3.1.0 @microsoft/microsoft-graph-client@2.0.0
-```
+    ```Shell
+    npm install dotenv@8.2.0 moment@2.24.0 connect-flash@0.1.1 express-session@1.17.0 isomorphic-fetch@2.2.1
+    npm install passport-azure-ad@4.2.1 simple-oauth2@3.3.0 @microsoft/microsoft-graph-client@2.0.0
+    ```
 
-> [!TIP]
-> Windows-Benutzer erhalten möglicherweise die folgende Fehlermeldung, wenn Sie versuchen, diese Pakete unter Windows zu installieren.
->
-> ```Shell
-> gyp ERR! stack Error: Can't find Python executable "python", you can set the PYTHON env variable.
-> ```
->
-> Um den Fehler zu beheben, führen Sie den folgenden Befehl aus, um die Windows-Erstellungstools mithilfe eines erhöhten Terminalfensters (Administrator) zu installieren, das die vs-Erstellungstools und Python installiert.
->
-> ```Shell
-> npm install --global --production windows-build-tools
-> ```
+    > [!TIP]
+    > Windows-Benutzer erhalten möglicherweise die folgende Fehlermeldung, wenn Sie versuchen, diese Pakete unter Windows zu installieren.
+    >
+    > ```Shell
+    > gyp ERR! stack Error: Can't find Python executable "python", you can set the PYTHON env variable.
+    > ```
+    >
+    > Um den Fehler zu beheben, führen Sie den folgenden Befehl aus, um die Windows-Erstellungstools mithilfe eines erhöhten Terminalfensters (Administrator) zu installieren, das die vs-Erstellungstools und Python installiert.
+    >
+    > ```Shell
+    > npm install --global --production windows-build-tools
+    > ```
 
-Aktualisieren Sie nun die Anwendung für die `connect-flash` Verwendung `express-session` der und Middleware. Öffnen Sie `./app.js` die Datei, und fügen `require` Sie die folgende Anweisung am Anfang der Datei hinzu.
+1. Aktualisieren Sie die Anwendung, um `connect-flash` die `express-session` and-Middleware zu verwenden. Öffnen Sie `./app.js` die Datei, und fügen `require` Sie die folgende Anweisung am Anfang der Datei hinzu.
 
-```js
-var session = require('express-session');
-var flash = require('connect-flash');
-```
+    ```javascript
+    var session = require('express-session');
+    var flash = require('connect-flash');
+    ```
 
-Fügen Sie den folgenden Code unmittelbar nach `var app = express();` der Codezeile hinzu.
+1. Fügen Sie den folgenden Code unmittelbar nach `var app = express();` der Codezeile hinzu.
 
-```js
-// Session middleware
-// NOTE: Uses default in-memory session store, which is not
-// suitable for production
-app.use(session({
-  secret: 'your_secret_value_here',
-  resave: false,
-  saveUninitialized: false,
-  unset: 'destroy'
-}));
+    :::code language="javascript" source="../demo/graph-tutorial/app.js" id="SessionSnippet":::
 
-// Flash middleware
-app.use(flash());
+## <a name="design-the-app"></a>Entwerfen der App
 
-// Set up local vars for template layout
-app.use(function(req, res, next) {
-  // Read any flashed errors and save
-  // in the response locals
-  res.locals.error = req.flash('error_msg');
+In diesem Abschnitt werden Sie die Benutzeroberfläche für die APP implementieren.
 
-  // Check for simple error string and
-  // convert to layout's expected format
-  var errs = req.flash('error');
-  for (var i in errs){
-    res.locals.error.push({message: 'An error occurred', debug: errs[i]});
-  }
+1. Öffnen Sie `./views/layout.hbs` die Datei, und ersetzen Sie den gesamten Inhalt durch den folgenden Code.
 
-  next();
-});
-```
+    :::code language="html" source="../demo/graph-tutorial/views/layout.hbs" id="LayoutSnippet":::
 
-## <a name="design-the-app"></a>Entwerfen der APP
+    Dieser Code fügt [Bootstrap](http://getbootstrap.com/) zur einfachen Formatierung hinzu, und [Font Awesome](https://fontawesome.com/) für einige einfache Symbole. Außerdem wird ein globales Layout mit einer Navigationsleiste definiert.
 
-Erstellen Sie zunächst das globale Layout für die app. Öffnen Sie `./views/layout.hbs` die Datei, und ersetzen Sie den gesamten Inhalt durch den folgenden Code.
+1. Öffnen `./public/stylesheets/style.css` Sie den gesamten Inhalt, und ersetzen Sie ihn durch Folgendes.
 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Node.js Graph Tutorial</title>
+    :::code language="css" source="../demo/graph-tutorial/public/stylesheets/style.css":::
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-      integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
-      integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-      integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-      integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
-  </head>
+1. Öffnen Sie `./views/index.hbs` die Datei, und ersetzen Sie den Inhalt durch Folgendes.
 
-  <body>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <div class="container">
-        <a href="/" class="navbar-brand">Node.js Graph Tutorial</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a href="/" class="nav-link{{#if active.home}} active{{/if}}">Home</a>
-            </li>
-            {{#if user}}
-              <li class="nav-item" data-turbolinks="false">
-                <a href="/calendar" class="nav-link{{#if active.calendar}} active{{/if}}">Calendar</a>
-              </li>
-            {{/if}}
-          </ul>
-          <ul class="navbar-nav justify-content-end">
-            <li class="nav-item">
-              <a class="nav-link" href="https://developer.microsoft.com/graph/docs/concepts/overview" target="_blank">
-                <i class="fas fa-external-link-alt mr-1"></i>Docs
-              </a>
-            </li>
-            {{#if user}}
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
-                  aria-expanded="false">
-                  {{#if user.avatar}}
-                    <img src="{{ user.avatar }}" class="rounded-circle align-self-center mr-2" style="width: 32px;">
-                  {{else}}
-                    <i class="far fa-user-circle fa-lg rounded-circle align-self-center mr-2" style="width: 32px;"></i>
-                  {{/if}}
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <h5 class="dropdown-item-text mb-0">{{ user.displayName }}</h5>
-                  <p class="dropdown-item-text text-muted mb-0">{{ user.email }}</p>
-                  <div class="dropdown-divider"></div>
-                  <a href="/auth/signout" class="dropdown-item">Sign Out</a>
-                </div>
-              </li>
-            {{else}}
-              <li class="nav-item">
-                <a href="/auth/signin" class="nav-link">Sign In</a>
-              </li>
-            {{/if}}
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <main role="main" class="container">
-      {{#each error}}
-        <div class="alert alert-danger" role="alert">
-          <p class="mb-3">{{ this.message }}</p>
-          {{#if this.debug }}
-            <pre class="alert-pre border bg-light p-2"><code>{{ this.debug }}</code></pre>
-          {{/if}}
-        </div>
-      {{/each}}
+    :::code language="html" source="../demo/graph-tutorial/views/index.hbs" id="IndexSnippet":::
 
-      {{{body}}}
-    </main>
-  </body>
-</html>
-```
+1. Öffnen Sie `./routes/index.js` die Datei, und ersetzen Sie den vorhandenen Code durch Folgendes.
 
-Dieser Code fügt [Bootstrap](http://getbootstrap.com/) für einfaches Styling und [Font awesome](https://fontawesome.com/) für einige einfache Symbole hinzu. Außerdem wird ein globales Layout mit einer Navigationsleiste definiert.
+    :::code language="javascript" source="../demo/graph-tutorial/routes/index.js" id="IndexRouterSnippet" highlight="6-10":::
 
-Öffnen `./public/stylesheets/style.css` Sie nun und ersetzen Sie den gesamten Inhalt durch Folgendes.
+1. Speichern Sie alle Änderungen, und starten Sie den Server neu. Nun sollte die APP sehr unterschiedlich aussehen.
 
-```css
-body {
-  padding-top: 4.5rem;
-}
-
-.alert-pre {
-  word-wrap: break-word;
-  word-break: break-all;
-  white-space: pre-wrap;
-}
-```
-
-Aktualisieren Sie nun die Standardseite. Öffnen Sie `./views/index.hbs` die Datei, und ersetzen Sie den Inhalt durch Folgendes.
-
-```html
-<div class="jumbotron">
-  <h1>Node.js Graph Tutorial</h1>
-  <p class="lead">This sample app shows how to use the Microsoft Graph API to access Outlook and OneDrive data from Node.js</p>
-  {{#if user}}
-    <h4>Welcome {{ user.displayName }}!</h4>
-    <p>Use the navigation bar at the top of the page to get started.</p>
-  {{else}}
-    <a href="/auth/signin" class="btn btn-primary btn-large">Click here to sign in</a>
-  {{/if}}
-</div>
-```
-
-Öffnen Sie `./routes/index.js` die Datei, und ersetzen Sie den vorhandenen Code durch Folgendes.
-
-```js
-var express = require('express');
-var router = express.Router();
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  let params = {
-    active: { home: true }
-  };
-
-  res.render('index', params);
-});
-
-module.exports = router;
-```
-
-Speichern Sie alle Änderungen, und starten Sie den Server neu. Nun sollte die APP sehr unterschiedlich aussehen.
-
-![Screenshot der neu gestalteten Startseite](./images/create-app-01.png)
+    ![Screenshot der neu gestalteten Homepage](./images/create-app-01.png)

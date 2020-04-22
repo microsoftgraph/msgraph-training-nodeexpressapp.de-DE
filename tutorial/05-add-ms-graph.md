@@ -1,173 +1,100 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-In dieser Übung werden Sie das Microsoft Graph in die Anwendung integrieren. Für diese Anwendung verwenden Sie die [Microsoft-Graph-Client-](https://github.com/microsoftgraph/msgraph-sdk-javascript) Bibliothek, um Anrufe an Microsoft Graph zu tätigen.
+In dieser Übung werden Sie Microsoft Graph in die Anwendung integrieren. Für diese Anwendung verwenden Sie die [Microsoft-Graph-Client-](https://github.com/microsoftgraph/msgraph-sdk-javascript) Bibliothek, um Anrufe an Microsoft Graph zu tätigen.
 
-## <a name="get-calendar-events-from-outlook"></a>Abrufen von Kalenderereignissen aus Outlook
+## <a name="get-calendar-events-from-outlook"></a>Abrufen von Kalenderereignissen von Outlook
 
-Beginnen Sie mit dem Hinzufügen einer neuen `./graph.js` Methode zur Datei, um die Ereignisse aus dem Kalender abzurufen. Fügen Sie die folgende Funktion in `module.exports` der `./graph.js`in hinzu.
+1. Öffnen `./graph.js` Sie und fügen Sie die folgende `module.exports`Funktion in ein.
 
-```js
-getEvents: async function(accessToken) {
-  const client = getAuthenticatedClient(accessToken);
+    :::code language="javascript" source="../demo/graph-tutorial/graph.js" id="GetEventsSnippet":::
 
-  const events = await client
-    .api('/me/events')
-    .select('subject,organizer,start,end')
-    .orderby('createdDateTime DESC')
-    .get();
+    Überlegen Sie sich, was dieser Code macht.
 
-  return events;
-}
-```
+    - Die URL, die aufgerufen wird, lautet `/me/events`.
+    - Die `select` -Methode schränkt die für die einzelnen Ereignisse zurückgegebenen Felder auf genau diejenigen ein, die die Ansicht tatsächlich verwendet wird.
+    - Die `orderby` Methode sortiert die Ergebnisse nach dem Datum und der Uhrzeit, zu der Sie erstellt wurden, wobei das letzte Element zuerst angezeigt wird.
 
-Überprüfen Sie, was dieser Code tut.
+1. Erstellen Sie eine neue Datei im `./routes` Verzeichnis mit `calendar.js`dem Namen, und fügen Sie den folgenden Code hinzu.
 
-- Die URL, die aufgerufen wird `/me/events`.
-- Die `select` -Methode schränkt die für die einzelnen Ereignisse zurückgegebenen Felder auf genau diejenigen ein, die die Ansicht tatsächlich verwendet wird.
-- Die `orderby` Methode sortiert die Ergebnisse nach dem Datum und der Uhrzeit, zu der Sie erstellt wurden, wobei das letzte Element zuerst angezeigt wird.
+    ```javascript
+    var express = require('express');
+    var router = express.Router();
+    var tokens = require('../tokens.js');
+    var graph = require('../graph.js');
 
-Erstellen Sie eine neue Datei im `./routes` Verzeichnis mit `calendar.js`dem Namen, und fügen Sie den folgenden Code hinzu.
+    /* GET /calendar */
+    router.get('/',
+      async function(req, res) {
+        if (!req.isAuthenticated()) {
+          // Redirect unauthenticated requests to home page
+          res.redirect('/')
+        } else {
+          let params = {
+            active: { calendar: true }
+          };
 
-```js
-var express = require('express');
-var router = express.Router();
-var tokens = require('../tokens.js');
-var graph = require('../graph.js');
+          // Get the access token
+          var accessToken;
+          try {
+            accessToken = await tokens.getAccessToken(req);
+          } catch (err) {
+            res.json(err);
+          }
 
-/* GET /calendar */
-router.get('/',
-  async function(req, res) {
-    if (!req.isAuthenticated()) {
-      // Redirect unauthenticated requests to home page
-      res.redirect('/')
-    } else {
-      let params = {
-        active: { calendar: true }
-      };
+          if (accessToken && accessToken.length > 0) {
+            try {
+              // Get the events
+              var events = await graph.getEvents(accessToken);
 
-      // Get the access token
-      var accessToken;
-      try {
-        accessToken = await tokens.getAccessToken(req);
-      } catch (err) {
-        res.json(err);
-      }
-
-      if (accessToken && accessToken.length > 0) {
-        try {
-          // Get the events
-          var events = await graph.getEvents(accessToken);
-
-          res.json(events.value);
-        } catch (err) {
-          res.json(err);
+              res.json(events.value);
+            } catch (err) {
+              res.json(err);
+            }
+          }
+          else {
+            req.flash('error_msg', 'Could not get an access token');
+          }
         }
       }
-    }
-  }
-);
+    );
 
-module.exports = router;
-```
+    module.exports = router;
+    ```
 
-Aktualisieren `./app.js` Sie diese neue Route. Fügen Sie die folgende **vor** der `var app = express();` -Reihe hinzu.
+1. Aktualisieren `./app.js` Sie diese neue Route. Fügen Sie die folgende **vor** der `var app = express();` -Reihe hinzu.
 
-```js
-var calendarRouter = require('./routes/calendar');
-```
+    ```javascript
+    var calendarRouter = require('./routes/calendar');
+    ```
 
-Fügen Sie dann die folgende **** Folge nach `app.use('/auth', authRouter);` der-Verbindung hinzu.
+1. Fügen Sie die folgende **after** Folge nach `app.use('/auth', authRouter);` der-Verbindung hinzu.
 
-```js
-app.use('/calendar', calendarRouter);
-```
+    ```javascript
+    app.use('/calendar', calendarRouter);
+    ```
 
-Nun können Sie dies testen. Melden Sie sich an, und klicken Sie in der Navigationsleiste auf den Link **Kalender** . Wenn alles funktioniert, sollte ein JSON-Abbild der Ereignisse im Kalender des Benutzers angezeigt werden.
+1. Starten Sie den Server neu. Melden Sie sich an, und klicken Sie in der Navigationsleiste auf den Link **Kalender** . Wenn alles funktioniert, sollte ein JSON-Abbild von Ereignissen im Kalender des Benutzers angezeigt werden.
 
 ## <a name="display-the-results"></a>Anzeigen der Ergebnisse
 
-Jetzt können Sie eine Ansicht hinzufügen, um die Ergebnisse auf eine benutzerfreundlichere Weise anzuzeigen. Fügen Sie zunächst den folgenden Code `./app.js` **nach** der `app.set('view engine', 'hbs');` -Codezeile ein.
+Jetzt können Sie eine Ansicht hinzufügen, um die Ergebnisse benutzerfreundlicher anzuzeigen.
 
-```js
-var hbs = require('hbs');
-var moment = require('moment');
-// Helper to format date/time sent by Graph
-hbs.registerHelper('eventDateTime', function(dateTime){
-  return moment(dateTime).format('M/D/YY h:mm A');
-});
-```
+1. Fügen Sie den folgenden Code `./app.js` **nach** der `app.set('view engine', 'hbs');` -Codezeile hinzu.
 
-Dadurch wird ein [Lenker-Helfer](http://handlebarsjs.com/#helpers) implementiert, um das von Microsoft Graph zurückgegebene ISO 8601-Datum in etwas menschlicheres zu formatieren.
+    :::code language="javascript" source="../demo/graph-tutorial/app.js" id="FormatDateSnippet":::
 
-Erstellen Sie eine neue Datei im `./views` Verzeichnis mit `calendar.hbs` dem Namen, und fügen Sie den folgenden Code hinzu.
+    Dadurch wird ein [Lenker-Helfer](http://handlebarsjs.com/#helpers) implementiert, um das von Microsoft Graph zurückgegebene ISO 8601-Datum in etwas menschlicheres zu formatieren.
 
-```html
-<h1>Calendar</h1>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Organizer</th>
-      <th scope="col">Subject</th>
-      <th scope="col">Start</th>
-      <th scope="col">End</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each events}}
-      <tr>
-        <td>{{this.organizer.emailAddress.name}}</td>
-        <td>{{this.subject}}</td>
-        <td>{{eventDateTime this.start.dateTime}}</td>
-        <td>{{eventDateTime this.end.dateTime}}</td>
-      </tr>
-    {{/each}}
-  </tbody>
-</table>
-```
+1. Erstellen Sie eine neue Datei im `./views` Verzeichnis mit `calendar.hbs` dem Namen, und fügen Sie den folgenden Code hinzu.
 
-Dadurch wird eine Auflistung von Ereignissen durchlaufen und für jeden eine Tabellenzeile hinzugefügt. Aktualisieren Sie nun die Route `./routes/calendar.js` in, um diese Ansicht zu verwenden. Ersetzen Sie die vorhandene Route durch den folgenden Code.
+    :::code language="html" source="../demo/graph-tutorial/views/calendar.hbs" id="LayoutSnippet":::
 
-```js
-router.get('/',
-  async function(req, res) {
-    if (!req.isAuthenticated()) {
-      // Redirect unauthenticated requests to home page
-      res.redirect('/')
-    } else {
-      let params = {
-        active: { calendar: true }
-      };
+    Dadurch wird eine Ereignissammlung durchlaufen und jedem Ereignis wird jeweils eine Tabellenzeile hinzugefügt.
 
-      // Get the access token
-      var accessToken;
-      try {
-        accessToken = await tokens.getAccessToken(req);
-      } catch (err) {
-        req.flash('error_msg', {
-          message: 'Could not get access token. Try signing out and signing in again.',
-          debug: JSON.stringify(err)
-        });
-      }
+1. Aktualisieren Sie nun die Route `./routes/calendar.js` in, um diese Ansicht zu verwenden. Ersetzen Sie die vorhandene Route durch den folgenden Code.
 
-      if (accessToken && accessToken.length > 0) {
-        try {
-          // Get the events
-          var events = await graph.getEvents(accessToken);
-          params.events = events.value;
-        } catch (err) {
-          req.flash('error_msg', {
-            message: 'Could not fetch events',
-            debug: JSON.stringify(err)
-          });
-        }
-      }
+    :::code language="javascript" source="../demo/graph-tutorial/routes/calendar.js" id="GetRouteSnippet" highlight="16-19,26,28-31,37":::
 
-      res.render('calendar', params);
-    }
-  }
-);
-```
+1. Speichern Sie Ihre Änderungen, starten Sie den Server neu, und melden Sie sich bei der APP an. Klicken Sie auf den Link **Kalender** , und die APP sollte jetzt eine Tabelle mit Ereignissen rendern.
 
-Speichern Sie Ihre Änderungen, starten Sie den Server neu, und melden Sie sich bei der APP an. Klicken Sie auf den Link **Kalender** , und die APP sollte jetzt eine Tabelle mit Ereignissen rendern.
-
-![Ein Screenshot der Ereignistabelle](./images/add-msgraph-01.png)
+    ![Ein Screenshot der Tabelle mit Ereignissen](./images/add-msgraph-01.png)
