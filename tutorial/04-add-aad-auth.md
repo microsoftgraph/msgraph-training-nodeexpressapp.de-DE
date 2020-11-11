@@ -1,17 +1,17 @@
 <!-- markdownlint-disable MD002 MD041 -->
 
-In dieser Übung erweitern Sie die Anwendung aus der vorherigen Übung, um die Authentifizierung mit Azure AD zu unterstützen. Dies ist erforderlich, um das erforderliche OAuth-Zugriffstoken zum Aufrufen von Microsoft Graph zu erhalten. In diesem Schritt werden Sie die [Passport-Azure-AD](https://github.com/AzureAD/passport-azure-ad) -Bibliothek in die Anwendung integrieren.
+In dieser Übung erweitern Sie die Anwendung aus der vorherigen Übung, um die Authentifizierung mit Azure AD zu unterstützen. Dies ist erforderlich, um das erforderliche OAuth-Zugriffstoken zum Aufrufen von Microsoft Graph zu erhalten. In diesem Schritt werden Sie die [msal-Node-](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node) Bibliothek in die Anwendung integrieren.
 
-1. Erstellen Sie im Stammverzeichnis `.env` der Anwendung eine neue Datei mit dem Namen file, und fügen Sie den folgenden Code hinzu.
+1. Erstellen Sie eine neue Datei mit dem Namen " **. env** " im Stammverzeichnis Ihrer Anwendung, und fügen Sie den folgenden Code hinzu.
 
-    :::code language="ini" source="../demo/graph-tutorial/.env.example":::
+    :::code language="ini" source="../demo/graph-tutorial/example.env":::
 
-    Ersetzen `YOUR APP ID HERE` Sie durch die Anwendungs-ID aus dem Anwendungs Registrierungs Portal, `YOUR APP SECRET HERE` und ersetzen Sie durch das Kennwort, das Sie generiert haben.
+    Ersetzen `YOUR_CLIENT_SECRET_HERE` Sie durch die Anwendungs-ID aus dem Anwendungs Registrierungs Portal, und ersetzen `YOUR_APP_SECRET_HERE` Sie durch den von Ihnen generierten Client Schlüssel.
 
     > [!IMPORTANT]
-    > Wenn Sie die Quellcodeverwaltung wie git verwenden, wäre es jetzt ein guter Zeitpunkt, die Datei `.env` aus der Quellcodeverwaltung auszuschließen, damit versehentlich keine APP-ID und Ihr Kennwort verloren gehen.
+    > Wenn Sie die Quellcodeverwaltung wie git verwenden, wäre es jetzt ein guter Zeitpunkt, die **. env** -Datei aus der Quellcodeverwaltung auszuschließen, damit versehentlich Ihre APP-ID und Ihr Kennwort verloren gehen.
 
-1. Öffnen `./app.js` Sie und fügen Sie die folgende Codezeile am Anfang der Datei hinzu, um `.env` die Datei zu laden.
+1. Öffnen Sie **./app.js** , und fügen Sie die folgende Codezeile zum Anfang der Datei hinzu, um die **env** -Datei zu laden.
 
     ```javascript
     require('dotenv').config();
@@ -19,115 +19,91 @@ In dieser Übung erweitern Sie die Anwendung aus der vorherigen Übung, um die A
 
 ## <a name="implement-sign-in"></a>Implementieren der Anmeldung
 
-1. Suchen Sie die `var indexRouter = require('./routes/index');` - `./app.js`Position in. Fügen Sie den folgenden Code **vor** dieser Codezeile ein.
+1. Suchen Sie die-Position `var indexRouter = require('./routes/index');` in **./#b0**. Fügen Sie den folgenden Code **vor** dieser Codezeile ein.
+
+    :::code language="javascript" source="../demo/graph-tutorial/app.js" id="MsalInitSnippet":::
+
+    Mit diesem Code wird die msal-Knoten Bibliothek mit der APP-ID und dem Kennwort für die APP initialisiert.
+
+1. Erstellen Sie eine neue Datei im **./routes** -Verzeichnis mit dem Namen **auth.js** , und fügen Sie den folgenden Code hinzu.
 
     ```javascript
-    var passport = require('passport');
-    var OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
-
-    // Configure passport
-
-    // In-memory storage of logged-in users
-    // For demo purposes only, production apps should store
-    // this in a reliable storage
-    var users = {};
-
-    // Passport calls serializeUser and deserializeUser to
-    // manage users
-    passport.serializeUser(function(user, done) {
-      // Use the OID property of the user as a key
-      users[user.profile.oid] = user;
-      done (null, user.profile.oid);
-    });
-
-    passport.deserializeUser(function(id, done) {
-      done(null, users[id]);
-    });
-
-    // Callback function called once the sign-in is complete
-    // and an access token has been obtained
-    async function signInComplete(iss, sub, profile, accessToken, refreshToken, params, done) {
-      if (!profile.oid) {
-        return done(new Error("No OID found in user profile."));
-      }
-
-      // Save the profile and tokens in user storage
-      users[profile.oid] = { profile, accessToken };
-      return done(null, users[profile.oid]);
-    }
-
-    // Configure OIDC strategy
-    passport.use(new OIDCStrategy(
-      {
-        identityMetadata: `${process.env.OAUTH_AUTHORITY}${process.env.OAUTH_ID_METADATA}`,
-        clientID: process.env.OAUTH_APP_ID,
-        responseType: 'code id_token',
-        responseMode: 'form_post',
-        redirectUrl: process.env.OAUTH_REDIRECT_URI,
-        allowHttpForRedirectUrl: true,
-        clientSecret: process.env.OAUTH_APP_PASSWORD,
-        validateIssuer: false,
-        passReqToCallback: false,
-        scope: process.env.OAUTH_SCOPES.split(' ')
-      },
-      signInComplete
-    ));
-    ```
-
-    Dieser Code initialisiert die [Passport. js](http://www.passportjs.org/) -Bibliothek für die `passport-azure-ad` Verwendung der Bibliothek und konfiguriert Sie mit der APP-ID und dem Kennwort für die app.
-
-1. Suchen Sie die `app.use('/', indexRouter);` - `./app.js`Position in. Fügen Sie den folgenden Code **vor** dieser Codezeile ein.
-
-    ```javascript
-    // Initialize passport
-    app.use(passport.initialize());
-    app.use(passport.session());
-    ```
-
-1. Erstellen Sie eine neue Datei im `./routes` Verzeichnis mit `auth.js` dem Namen, und fügen Sie den folgenden Code hinzu.
-
-    ```javascript
-    var express = require('express');
-    var passport = require('passport');
-    var router = express.Router();
+    var router = require('express-promise-router')();
 
     /* GET auth callback. */
     router.get('/signin',
-      function  (req, res, next) {
-        passport.authenticate('azuread-openidconnect',
-          {
-            response: res,
-            prompt: 'login',
-            failureRedirect: '/',
-            failureFlash: true,
-            successRedirect: '/'
-          }
-        )(req,res,next);
+      async function (req, res) {
+        const urlParameters = {
+          scopes: process.env.OAUTH_SCOPES.split(','),
+          redirectUri: process.env.OAUTH_REDIRECT_URI
+        };
+
+        try {
+          const authUrl = await req.app.locals
+            .msalClient.getAuthCodeUrl(urlParameters);
+          res.redirect(authUrl);
+        }
+        catch (error) {
+          console.log(`Error: ${error}`);
+          req.flash('error_msg', {
+            message: 'Error getting auth URL',
+            debug: JSON.stringify(error, Object.getOwnPropertyNames(error))
+          });
+          res.redirect('/');
+        }
       }
     );
 
-    router.post('/callback',
-      function(req, res, next) {
-        passport.authenticate('azuread-openidconnect',
-          {
-            response: res,
-            failureRedirect: '/',
-            failureFlash: true
-          }
-        )(req,res,next);
-      },
-      function(req, res) {
-        // TEMPORARY!
-        // Flash the access token for testing purposes
-        req.flash('error_msg', {message: 'Access token', debug: req.user.accessToken});
+    router.get('/callback',
+      async function(req, res) {
+        const tokenRequest = {
+          code: req.query.code,
+          scopes: process.env.OAUTH_SCOPES.split(','),
+          redirectUri: process.env.OAUTH_REDIRECT_URI
+        };
+
+        try {
+          const response = await req.app.locals
+            .msalClient.acquireTokenByCode(tokenRequest);
+
+          // TEMPORARY!
+          // Flash the access token for testing purposes
+          req.flash('error_msg', {
+            message: 'Access token',
+            debug: response.accessToken
+          });
+        } catch (error) {
+          req.flash('error_msg', {
+            message: 'Error completing authentication',
+            debug: JSON.stringify(error, Object.getOwnPropertyNames(error))
+          });
+        }
+
         res.redirect('/');
       }
     );
 
     router.get('/signout',
-      function(req, res) {
-        req.session.destroy(function(err) {
-          req.logout();
+      async function(req, res) {
+        // Sign out
+        if (req.session.userId) {
+          // Look up the user's account in the cache
+          const accounts = await req.app.locals.msalClient
+            .getTokenCache()
+            .getAllAccounts();
+
+          const userAccount = accounts.find(a => a.homeAccountId === req.session.userId);
+
+          // Remove the account
+          if (userAccount) {
+            req.app.locals.msalClient
+              .getTokenCache()
+              .removeAccount(userAccount);
+          }
+        }
+
+        // Destroy the user's session
+        req.session.destroy(function (err) {
           res.redirect('/');
         });
       }
@@ -136,31 +112,31 @@ In dieser Übung erweitern Sie die Anwendung aus der vorherigen Übung, um die A
     module.exports = router;
     ```
 
-    Dadurch wird ein Router mit drei Routen definiert `signin`: `callback`, und `signout`.
+    Dadurch wird ein Router mit drei Routen definiert: `signin` , `callback` und `signout` .
 
-    Die `signin` Route Ruft die `passport.authenticate` Methode auf, wodurch die APP an die Azure-Anmeldeseite umgeleitet wird.
+    Die `signin` Route Ruft die `getAuthCodeUrl` Funktion auf, um die Anmelde-URL zu generieren, und leitet dann den Browser an diese URL um.
 
-    Auf `callback` der Route wird nach Abschluss der Anmeldung Azure umgeleitet. Der Code Ruft die `passport.authenticate` Methode erneut auf, wodurch `passport-azure-ad` die Strategie ein Zugriffstoken anfordert. Sobald das Token abgerufen wurde, wird der nächste Handler aufgerufen, der zurück zur Startseite mit dem Zugriffstoken im temporären Fehlerwert umgeleitet wird. Wir verwenden dies, um zu überprüfen, ob unsere Anmeldung funktionsfähig ist, bevor Sie fortfahren. Bevor wir testen, müssen wir die Express-App so konfigurieren, dass Sie den neuen `./routes/auth.js`Router verwendet.
+    Auf der `callback` Route wird nach Abschluss der Anmeldung Azure umgeleitet. Der Code Ruft die `acquireTokenByCode` Funktion auf, um den Autorisierungscode für ein Zugriffstoken auszutauschen. Sobald das Token abgerufen wurde, wird es an die Startseite mit dem Zugriffstoken im temporären Fehlerwert zurückgeleitet. Wir verwenden dies, um zu überprüfen, ob unsere Anmeldung funktionsfähig ist, bevor Sie fortfahren. Bevor wir testen, müssen wir die Express-App so konfigurieren, dass Sie den neuen Router aus **./routes/auth.js** verwendet.
 
     Die `signout` -Methode protokolliert den Benutzer und zerstört die Sitzung.
 
-1. Öffnen `./app.js` Sie den folgenden Code, und fügen `var app = express();` Sie ihn **vor** die Codezeile ein.
+1. Öffnen Sie **./app.js** , und fügen Sie den folgenden Code **vor** die- `var app = express();` Codezeile ein.
 
     ```javascript
     var authRouter = require('./routes/auth');
     ```
 
-1. Fügen Sie den folgenden **after** Code nach `app.use('/', indexRouter);` der Codezeile ein.
+1. Fügen Sie den folgenden Code **nach** der `app.use('/', indexRouter);` Codezeile ein.
 
     ```javascript
     app.use('/auth', authRouter);
     ```
 
-Starten Sie den Server, und `https://localhost:3000`navigieren Sie zu. Klicken Sie auf die Schaltfläche zum Anmelden, um zu `https://login.microsoftonline.com`weitergeleitet zu werden. Melden Sie sich mit Ihrem Microsoft-Konto an, und stimmen Sie den angeforderten Berechtigungen zu. Der Browser leitet zur App um, in der Sie das Token sehen.
+Starten Sie den Server, und navigieren Sie zu `https://localhost:3000` . Klicken Sie auf die Schaltfläche zum Anmelden, um zu `https://login.microsoftonline.com`weitergeleitet zu werden. Melden Sie sich mit Ihrem Microsoft-Konto an, und stimmen Sie den angeforderten Berechtigungen zu. Der Browser leitet zur App um, in der Sie das Token sehen.
 
 ### <a name="get-user-details"></a>Benutzerdetails abrufen
 
-1. Erstellen Sie eine neue Datei im Stamm des Projekts mit dem `graph.js` Namen, und fügen Sie den folgenden Code hinzu.
+1. Erstellen Sie eine neue Datei im Stamm des Projekts mit dem Namen **graph.js** , und fügen Sie den folgenden Code hinzu.
 
     ```javascript
     var graph = require('@microsoft/microsoft-graph-client');
@@ -170,9 +146,12 @@ Starten Sie den Server, und `https://localhost:3000`navigieren Sie zu. Klicken S
       getUserDetails: async function(accessToken) {
         const client = getAuthenticatedClient(accessToken);
 
-        const user = await client.api('/me').get();
+        const user = await client
+          .api('/me')
+          .select('displayName,mail,mailboxSettings,userPrincipalName')
+          .get();
         return user;
-      }
+      },
     };
 
     function getAuthenticatedClient(accessToken) {
@@ -189,64 +168,19 @@ Starten Sie den Server, und `https://localhost:3000`navigieren Sie zu. Klicken S
     }
     ```
 
-    Dadurch wird die `getUserDetails` Funktion exportiert, die das Microsoft Graph-SDK verwendet, `/me` um den Endpunkt aufzurufen und das Ergebnis zurückzugeben.
+    Dadurch wird die `getUserDetails` Funktion exportiert, die das Microsoft Graph-SDK verwendet, um den Endpunkt aufzurufen `/me` und das Ergebnis zurückzugeben.
 
-1. Öffnen `/app.js` Sie und fügen Sie `require` die folgenden Anweisungen am Anfang der Datei hinzu.
-
-    ```javascript
-    var graph = require('./graph');
-    ```
-
-1. Ersetzen Sie die vorhandene `signInComplete`-Funktion durch den folgenden Code.
+1. Öffnen Sie **./routes/auth.js** , und fügen Sie die folgenden `require` Anweisungen am Anfang der Datei hinzu.
 
     ```javascript
-    async function signInComplete(iss, sub, profile, accessToken, refreshToken, params, done) {
-      if (!profile.oid) {
-        return done(new Error("No OID found in user profile."));
-      }
-
-      try{
-        const user = await graph.getUserDetails(accessToken);
-
-        if (user) {
-          // Add properties to profile
-          profile['email'] = user.mail ? user.mail : user.userPrincipalName;
-        }
-      } catch (err) {
-        return done(err);
-      }
-
-      // Save the profile and tokens in user storage
-      users[profile.oid] = { profile, accessToken };
-      return done(null, users[profile.oid]);
-    }
+    var graph = require('../graph');
     ```
 
-    Der neue Code aktualisiert den `profile` von Passport bereitgestellten `email` , um eine Eigenschaft mithilfe der von Microsoft Graph zurückgegebenen Daten hinzuzufügen.
+1. Ersetzen Sie die vorhandene Rückruf Route durch den folgenden Code.
 
-1. Fügen Sie Folgendes **nach** der `app.use(passport.session());` -Verbindung hinzu.
+    :::code language="javascript" source="../demo/graph-tutorial/routes/auth.js" id="CallbackSnippet" highlight="13-23":::
 
-    :::code language="javascript" source="../demo/graph-tutorial/app.js" id="AddProfileSnippet":::
-
-    Durch diesen Code wird das Benutzerprofil in `locals` die Eigenschaft der Antwort geladen. Dadurch wird es für alle Ansichten in der app verfügbar gemacht.
-
-## <a name="storing-the-tokens"></a>Speichern des Tokens
-
-Nun, da Sie Token abrufen können, ist es an der Zeit, eine Möglichkeit einzurichten, diese in der App zu speichern. Derzeit speichert die APP das unformatierte Zugriffstoken im Speicher des speicherresidenten Benutzers. Da es sich um eine Beispiel-App handelt, werden Sie Sie aus Gründen der Einfachheit weiterhin dort speichern. Eine echte App würde eine zuverlässigere sichere Speicherlösung wie eine Datenbank verwenden.
-
-Wenn Sie jedoch nur das Zugriffstoken speichern, können Sie das Ablaufdatum überprüfen oder das Token aktualisieren. Um dies zu ermöglichen, aktualisieren Sie das Beispiel so, dass die Token in `AccessToken` einem Objekt aus `simple-oauth2` der Bibliothek umbrochen werden.
-
-1. Öffnen `./app.js` Sie den folgenden Code, und fügen `signInComplete` Sie ihn **vor** der Funktion hinzu.
-
-    :::code language="javascript" source="../demo/graph-tutorial/app.js" id="ConfigureOAuth2Snippet":::
-
-1. Ersetzen Sie die vorhandene `signInComplete`-Funktion durch Folgendes.
-
-    :::code language="javascript" source="../demo/graph-tutorial/app.js" id="SignInCompleteSnippet" highlight="17-18, 21":::
-
-1. Ersetzen Sie die vorhandene Rückruf Route `./routes/auth.js` in durch Folgendes.
-
-    :::code language="javascript" source="../demo/graph-tutorial/routes/auth.js" id="CallbackRouteSnippet" highlight="17-18":::
+    Der neue Code speichert die Konto-ID des Benutzers in der Sitzung, ruft die Details des Benutzers aus Microsoft Graph ab und speichert ihn im Benutzerspeicher der app.
 
 1. Starten Sie den Server neu, und fahren Sie mit dem Anmeldevorgang fort. Sie sollten wieder auf der Startseite enden, aber die Benutzeroberfläche sollte sich ändern, um anzugeben, dass Sie angemeldet sind.
 
@@ -256,14 +190,10 @@ Wenn Sie jedoch nur das Zugriffstoken speichern, können Sie das Ablaufdatum üb
 
     ![Screenshot des Dropdown-Menüs mit dem Link „Abmelden“](./images/add-aad-auth-02.png)
 
-## <a name="refreshing-tokens"></a>Aktualisieren von Token
+## <a name="storing-and-refreshing-tokens"></a>Speichern und Aktualisieren von Token
 
 Zu diesem Zeitpunkt verfügt Ihre Anwendung über ein Zugriffstoken, das in der `Authorization` Kopfzeile von API-aufrufen gesendet wird. Dies ist das Token, das es der App ermöglicht, im Namen des Benutzers auf Microsoft Graph zuzugreifen.
 
-Dieses Token ist jedoch nur kurzzeitig verfügbar. Das Token läuft eine Stunde nach seiner Ausgabe ab. An dieser Stelle kommt das Aktualisierungstoken ins Spiel. Anhand des Aktualisierungstoken ist die App in der Lage, ein neues Zugriffstoken anzufordern, ohne dass der Benutzer sich erneut anmelden muss.
+Dieses Token ist jedoch nur kurzzeitig verfügbar. Das Token läuft eine Stunde nach seiner Ausgabe ab. An dieser Stelle kommt das Aktualisierungstoken ins Spiel. Mit der OAuth-Spezifikation wird ein Aktualisierungstoken eingeführt, mit dem die APP ein neues Zugriffstoken anfordern kann, ohne dass sich der Benutzer erneut anmelden muss.
 
-1. Erstellen `tokens.js` Sie eine neue Datei im Stamm des Projekts, in dem die Token-Verwaltungsfunktionen gespeichert sind. Fügen Sie den folgenden Code hinzu.
-
-    :::code language="javascript" source="../demo/graph-tutorial/tokens.js" id="TokensSnippet":::
-
-Diese Methode überprüft zunächst, ob das Zugriffstoken abgelaufen oder nahezu abläuft. Wenn dies der Fall ist, wird das Aktualisierungstoken verwendet, um neue Token abzurufen, dann wird der Cache aktualisiert und das neue Zugriffstoken zurückgegeben. Sie verwenden diese Methode immer dann, wenn Sie das Zugriffstoken aus dem Speicher holen müssen.
+Da die APP das msal-Node-Paket verwendet, müssen Sie keine Token-Speicher-oder Aktualisierungslogik implementieren. Die APP verwendet den standardmäßigen msal-Token-Cache im Arbeitsspeicher, der für eine Beispielanwendung ausreicht. Produktionsanwendungen sollten ein eigenes [Cache-Plugin](https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/configuration.md) bereitstellen, um den Token-Cache in einem sicheren, zuverlässigen Speichermedium zu serialisieren.

@@ -4,7 +4,7 @@
 
 Um das abgeschlossene Projekt in diesem Ordner auszuführen, benötigen Sie Folgendes:
 
-- [Node. js](https://nodejs.org) auf dem Entwicklungscomputer installiert. Wenn Sie nicht über Node. js verfügen, besuchen Sie den vorherigen Link für Downloadoptionen. (**Hinweis:** dieses Lernprogramm wurde mit Node Version 12.6.1 geschrieben. Die Schritte in diesem Leitfaden funktionieren möglicherweise mit anderen Versionen, aber das wurde nicht getestet.)
+- [Node.js](https://nodejs.org) auf dem Entwicklungscomputer installiert. Wenn Sie nicht über Node.js verfügen, besuchen Sie den vorherigen Link für Downloadoptionen. ( **Hinweis:** dieses Lernprogramm wurde mit Node Version 12.6.1 geschrieben. Die Schritte in diesem Leitfaden funktionieren möglicherweise mit anderen Versionen, aber das wurde nicht getestet.)
 - Entweder ein persönliches Microsoft-Konto mit einem Postfach auf Outlook.com oder ein Microsoft-Arbeits-oder Schulkonto.
 
 Wenn Sie kein Microsoft-Konto haben, gibt es mehrere Optionen, um ein kostenloses Konto zu erhalten:
@@ -28,13 +28,9 @@ Wenn Sie kein Microsoft-Konto haben, gibt es mehrere Optionen, um ein kostenlose
 
     ![Screenshot der Seite "Anwendung registrieren"](/tutorial/images/aad-register-an-app.png)
 
-1. Wählen Sie **Registrieren** aus. Kopieren Sie auf der Seite **node. js Graph Tutorial** den Wert der **Anwendungs-ID (Client)** , und speichern Sie Sie, um Sie im nächsten Schritt zu benötigen.
+1. Wählen Sie **Registrieren** aus. Kopieren Sie auf der Seite **Node.js Graph-Lernprogramm** den Wert der **Anwendungs-ID (Client)** , und speichern Sie ihn, und Sie benötigen ihn im nächsten Schritt.
 
     ![Screenshot der Anwendungs-ID der neuen App-Registrierung](/tutorial/images/aad-application-id.png)
-
-1. Wählen Sie unter **Verwalten** die Option **Authentifizierung** aus. Suchen Sie den Abschnitt **Implizite Gewährung**, und aktivieren Sie **ID-Token**. Wählen Sie **Speichern** aus.
-
-    ![Screenshot des Abschnitts "Implizite Gewährung"](/tutorial/images/aad-implicit-grant.png)
 
 1. Wählen Sie unter **Verwalten** die Option **Zertifikate und Geheime Clientschlüssel** aus. Wählen Sie die Schaltfläche **Neuen geheimen Clientschlüssel** aus. Geben Sie einen Wert unter **Beschreibung** ein, wählen Sie eine der Optionen für **Gilt bis** aus, und wählen Sie dann **Hinzufügen**.
 
@@ -49,9 +45,9 @@ Wenn Sie kein Microsoft-Konto haben, gibt es mehrere Optionen, um ein kostenlose
 
 ## <a name="configure-the-sample"></a>Konfigurieren des Beispiels
 
-1. Benennen Sie `.env.example` die Datei `.env`in.
-1. Bearbeiten Sie `.env` die Datei, und nehmen Sie die folgenden Änderungen vor.
-    1. Ersetzen `YOUR_APP_ID_HERE` Sie durch die **Anwendungs-ID** , die Sie im App-Registrierungs Portal erhalten haben.
+1. Benennen `example.env` Sie die Datei in `.env` .
+1. Bearbeiten Sie die `.env` Datei, und nehmen Sie die folgenden Änderungen vor.
+    1. Ersetzen `YOUR_CLIENT_SECRET_HERE` Sie durch die **Anwendungs-ID** , die Sie im App-Registrierungs Portal erhalten haben.
     1. Ersetzen `YOUR_APP_PASSWORD_HERE` Sie durch das Kennwort, das Sie aus dem App-Registrierungs Portal erhalten haben.
 1. Navigieren Sie in der Befehlszeilenschnittstelle (CLI) zu diesem Verzeichnis, und führen Sie den folgenden Befehl aus, um Anforderungen zu installieren.
 

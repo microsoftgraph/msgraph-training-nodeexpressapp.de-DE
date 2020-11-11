@@ -4,9 +4,9 @@ In dieser Übung erstellen Sie mithilfe des Azure Active Directory Admin Center 
 
 1. Öffnen Sie einen Browser, und navigieren Sie zum [Azure Active Directory Admin Center](https://aad.portal.azure.com). Melden Sie sich mit einem **persönlichen Konto** (auch: Microsoft-Konto) oder einem **Geschäfts- oder Schulkonto** an.
 
-1. Wählen Sie in der linken Navigationsleiste **Azure Active Directory** aus, und wählen Sie dann **App** -Registrierungen unter **Manage**aus.
+1. Wählen Sie in der linken Navigationsleiste **Azure Active Directory** aus, und wählen Sie dann **App-Registrierungen** unter **Verwalten** aus.
 
-    ![Ein Screenshot der APP-Registrierungen ](./images/aad-portal-app-registrations.png)
+    ![Screenshot der APP-Registrierungen ](./images/aad-portal-app-registrations.png)
 
 1. Wählen Sie **Neue Registrierung** aus. Legen Sie auf der Seite **Anwendung registrieren** die Werte wie folgt fest.
 
@@ -16,21 +16,17 @@ In dieser Übung erstellen Sie mithilfe des Azure Active Directory Admin Center 
 
     ![Screenshot der Seite "Anwendung registrieren"](./images/aad-register-an-app.png)
 
-1. Wählen Sie **registrieren**aus. Kopieren Sie auf der Seite **node. js Graph Tutorial** den Wert der **Anwendungs-ID (Client)** , und speichern Sie Sie, um Sie im nächsten Schritt zu benötigen.
+1. Wählen Sie **Registrieren** aus. Kopieren Sie auf der Seite **Node.js Graph-Lernprogramm** den Wert der **Anwendungs-ID (Client)** , und speichern Sie ihn, und Sie benötigen ihn im nächsten Schritt.
 
-    ![Ein Screenshot der Anwendungs-ID der neuen App-Registrierung](./images/aad-application-id.png)
+    ![Screenshot der Anwendungs-ID der neuen App-Registrierung](./images/aad-application-id.png)
 
-1. Wählen Sie unter **Verwalten** die Option **Authentifizierung** aus. Suchen Sie den Abschnitt **Implizite Gewährung**, und aktivieren Sie **ID-Token**. Klicken Sie auf **Speichern**.
+1. Wählen Sie unter **Verwalten** die Option **Zertifikate und Geheime Clientschlüssel** aus. Wählen Sie die Schaltfläche **Neuen geheimen Clientschlüssel** aus. Geben Sie einen Wert in **Beschreibung** ein, wählen Sie eine der Optionen für **Gilt bis** aus, und wählen Sie dann **Hinzufügen** aus.
 
-    ![Screenshot des impliziten Grant-Abschnitts](./images/aad-implicit-grant.png)
-
-1. Wählen Sie unter **Verwalten** die Option **Zertifikate und Geheime Clientschlüssel** aus. Wählen Sie die Schaltfläche **Neuen geheimen Clientschlüssel** aus. Geben Sie einen Wert in **Description** ein, und wählen Sie eine der Optionen für **Ablaufdatum** aus, und wählen Sie **Hinzufügen**aus.
-
-    ![Screenshot des Dialogfelds zum Hinzufügen eines geheimen Client Schlüssels](./images/aad-new-client-secret.png)
+    ![Screenshot des Dialogfelds "Geheimen Clientschlüssel hinzufügen"](./images/aad-new-client-secret.png)
 
 1. Kopieren Sie den Wert des geheimen Clientschlüssels, bevor Sie diese Seite verlassen. Sie benötigen ihn im nächsten Schritt.
 
     > [!IMPORTANT]
     > Dieser geheime Clientschlüssel wird nicht noch einmal angezeigt, stellen Sie daher sicher, dass Sie ihn jetzt kopieren.
 
-    ![Screenshot des neu hinzugefügten geheimen Client Schlüssels](./images/aad-copy-client-secret.png)
+    ![Screenshot des neu hinzugefügten Clientschlüssels](./images/aad-copy-client-secret.png)
